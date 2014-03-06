@@ -3,7 +3,10 @@
 class LoyaltyLion_Core_Block_Sdk extends Mage_Core_Block_Template {
   
   public function isEnabled() {
-    if (empty($this->getToken()) || empty($this->getSecret())) return false;
+    $token = $this->getToken();
+    $secret = $this->getSecret();
+
+    if (empty($token) || empty($secret)) return false;
     return true;
   }
 
