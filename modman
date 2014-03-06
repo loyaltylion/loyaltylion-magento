@@ -1,0 +1,4 @@
+app/code/local/LoyaltyLion/Core/                            app/code/local/LoyaltyLion/Core/
+app/design/frontend/base/default/template/loyaltylion/      app/design/frontend/base/default/template/loyaltylion/
+app/design/frontend/base/default/layout/loyaltylion.xml     app/design/frontend/base/default/layout/loyaltylion.xml
+app/etc/modules/LoyaltyLion_Core.xml                        app/etc/modules/LoyaltyLion_Core.xml

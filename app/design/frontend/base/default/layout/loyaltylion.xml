@@ -1,0 +1,8 @@
+<?xml version='1.0'?>
+<layout version='0.0.1'>
+  <default>
+    <reference name='head'>
+      <block type='loyaltylion/sdk' name='loyaltylion_sdk' template='loyaltylion/core/sdk.phtml' />
+    </reference>
+  </default>
+</layout>
