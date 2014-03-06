@@ -6,6 +6,11 @@ class LoyaltyLion_Core_Model_Observer {
   private $session;
 
   public function __construct() {
+    $this->token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
+    $this->secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
+
+    if (!$this->isEnabled()) return;
+
     require( Mage::getModuleDir('', 'LoyaltyLion_Core') . DS . 'lib' . DS . 'loyaltylion-client' . DS . 'main.php' );
 
     $options = array();
@@ -14,16 +19,18 @@ class LoyaltyLion_Core_Model_Observer {
       $options['base_uri'] = $_SERVER['LOYALTYLION_API_BASE'];
     }
 
-    $this->client = new LoyaltyLion_Client(
-      Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token'),
-      Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret'),
-      $options
-    );
+    $this->client = new LoyaltyLion_Client($this->token, $this->secret, $options);
 
     $this->session = Mage::getSingleton('core/session');
   }
 
+  private function isEnabled() {
+    if (empty($this->token) || empty($this->secret)) return false;
+    return true;
+  }
+
   public function handleOrderCreate(Varien_Event_Observer $observer) {
+    if (!$this->isEnabled()) return;
 
     $order = $observer->getEvent()->getOrder();
     
@@ -59,11 +66,13 @@ class LoyaltyLion_Core_Model_Observer {
   }
 
   public function handleOrderUpdate(Varien_Event_Observer $observer) {
+    if (!$this->isEnabled()) return;
 
     $this->sendOrderUpdate($observer->getEvent()->getOrder());
   }
 
   public function handleCustomerRegistration(Varien_Event_Observer $observer) {
+    if (!$this->isEnabled()) return;
 
     $customer = $observer->getEvent()->getCustomer();
 
@@ -71,6 +80,7 @@ class LoyaltyLion_Core_Model_Observer {
   }
 
   public function handleCustomerRegistrationOnepage(Varien_Event_Observer $observer) {
+    if (!$this->isEnabled()) return;
 
     $customer = $observer->getEvent()->getSource();
 
@@ -98,6 +108,7 @@ class LoyaltyLion_Core_Model_Observer {
    * @return [type]                          [description]
    */
   public function saveReferralId(Varien_Event_Observer $observer) {
+    if (!$this->isEnabled()) return;
 
     $referral_id = Mage::app()->getRequest()->getParam('ll_ref_id');
     if (!$referral_id) return;
