@@ -2,6 +2,11 @@
 
 class LoyaltyLion_Core_Block_Sdk extends Mage_Core_Block_Template {
   
+  public function isEnabled() {
+    if (empty($this->getToken()) || empty($this->getSecret())) return false;
+    return true;
+  }
+
   public function getToken() {
     return Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
   }
