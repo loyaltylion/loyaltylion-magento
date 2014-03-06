@@ -1,0 +1,2 @@
+# LoyaltyLion for Magento
+
