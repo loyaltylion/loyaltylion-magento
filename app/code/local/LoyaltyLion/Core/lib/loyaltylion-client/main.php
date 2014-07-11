@@ -21,10 +21,18 @@ class LoyaltyLion_Client {
 
     $this->connection = new LoyaltyLion_Connection($this->token, $this->secret, $this->base_uri);
 
-    $this->events = new LoyaltyLion_Events($this->connection);
+    $this->activities = $this->events = new LoyaltyLion_Activities($this->connection);
     $this->orders = new LoyaltyLion_Orders($this->connection);
   }
 
+  /**
+   * Get a customer auth token from LoyaltyLion
+   *
+   * @deprecated Use JavaScript MAC authentication instead
+   * 
+   * @param  [type] $customer_id [description]
+   * @return [type]              [description]
+   */
   public function getCustomerAuthToken($customer_id) {
     $params = array(
       'customer_id' => $customer_id,
@@ -73,33 +81,48 @@ class LoyaltyLion_Client {
   }
 }
 
-class LoyaltyLion_Events extends LoyaltyLion_Client {
+class LoyaltyLion_Activities extends LoyaltyLion_Client {
 
   public function __construct($connection) {
     $this->connection = $connection;
   }
 
   /**
-   * Track an event
+   * Track an activity
    * 
-   * @param  [type] $name             The activity name, as defined by you
-   * @param  [type] $customer_id      The ID of the current logged in customer
-   * @param  [type] $customer_email   The email of the current logged in customer
-   * @param  array  $properties       Activity specific properties
+   * @param  [type] $name             The activity name, e.g. "signup"
+   * @param  array  $properties       Activity data
+   * 
    * @return object                   An object with information about the request. If the track 
    *                                  was successful, object->success will be true.
    */
   public function track($name, $data) {
-    $params = array(
-      'name' => $name,
-      'date' => isset($data['date']) ? $data['date'] : date('c'),
-      'customer_id' => $data['customer_id'],
-      'customer_email' => $data['customer_email'],
-    );
 
-    if (isset($data['properties'])) $params['properties'] = $data['properties'];
+    if (!is_array($data)) throw new Exception('Activity data must be an array');
 
-    $response = $this->connection->post('/events', $params);
+    $data['name'] = $name;
+
+    if (empty($data['name'])) throw new Exception('Activity name is required');
+    if (empty($data['customer_id'])) throw new Exception('customer_id is required');
+    if (empty($data['customer_email'])) throw new Exception('customer_email is required');
+
+    if (empty($data['date'])) $data['date'] = date('c');
+
+    $response = $this->connection->post('/activities', $data);
+
+    return $this->parseResponse($response);
+  }
+
+  /**
+   * Update an activity using its merchant_id
+   * 
+   * @param  [type] $name [description]
+   * @param  [type] $id   [description]
+   * @param  [type] $data [description]
+   * @return [type]       [description]
+   */
+  public function update($name, $id, $data) {
+    $response = $this->connection->put('/activities/' . $name . '/' . $id, $data);
 
     return $this->parseResponse($response);
   }
@@ -111,12 +134,27 @@ class LoyaltyLion_Orders extends LoyaltyLion_Client {
     $this->connection = $connection;
   }
 
+  /**
+   * Create an order in LoyaltyLion
+   * 
+   * @param  [type] $data [description]
+   * @return [type]       [description]
+   */
   public function create($data) {
     $response = $this->connection->post('/orders', $data);
 
     return $this->parseResponse($response);
   }
 
+  /**
+   * Update an order by its merchant_id in LoyaltyLion
+   *
+   * This is an idempotent update which is safe to call everytime an order is updated
+   * 
+   * @param  [type] $id   [description]
+   * @param  [type] $data [description]
+   * @return [type]       [description]
+   */
   public function update($id, $data) {
     $response = $this->connection->put('/orders/' . $id, $data);
 
