@@ -1,5 +1,11 @@
 ## LoyaltyLion for Magento
 
+Version 0.0.1
+
+### Compatibility
+
+This module has been tested with Magento versions 1.7, 1.8 and 1.9.
+
 ### How to install
 
 The easiest way to install is to use [modman](https://github.com/colinmollenhour/modman), but you can also just download and extract the module into your Magento folder if preferred.
