@@ -55,6 +55,11 @@ class LoyaltyLion_Core_Model_Observer {
     if ($this->session->getLoyaltyLionReferralId())
       $data['referral_id'] = $this->session->getLoyaltyLionReferralId();
 
+    $tracking_id = $this->getTrackingIdFromSession();
+
+    if ($tracking_id)
+      $data['tracking_id'] = $tracking_id;
+
     $response = $this->client->orders->create($data);
 
     if ($response->success) {
@@ -104,18 +109,32 @@ class LoyaltyLion_Core_Model_Observer {
    * If a referral id is present (?ll_ref_id=xyz), save it to the session so it can be sent off with
    * tracked event calls later
    *
+   * This will also check for an `ll_eid` parameter (a tracking id) and save that, if it exists
+   *
    * @param  Varien_Event_Observer $observer [description]
    * @return [type]                          [description]
    */
-  public function saveReferralId(Varien_Event_Observer $observer) {
+  public function saveReferralAndTrackingId(Varien_Event_Observer $observer) {
     if (!$this->isEnabled()) return;
 
     $referral_id = Mage::app()->getRequest()->getParam('ll_ref_id');
-    if (!$referral_id) return;
 
-    if ($this->session->getLoyaltyLionReferralId()) return; // don't set it again if it exists
+    // don't overwrite an existing referral_id in the session, if one exists
+    if ($referral_id && !$this->session->getLoyaltyLionReferralId()) {
+      $this->session->setLoyaltyLionReferralId($referral_id);
+    }
 
-    $this->session->setLoyaltyLionReferralId($referral_id);
+    // check and set tracking_id by ll_eid param
+
+    $tracking_id = Mage::app()->getRequest()->getParam('ll_eid');
+    if (!$tracking_id) return;
+
+    // I can't determine the expiration mechanics behind `$this->session`, so we'll do the same thing
+    // we did for PrestaShop and attach a timestamp to the tracking_id, so we can ignore it if it's
+    // too old when we track an event later
+
+    $value = time() . ':::' . $tracking_id;
+    $this->session->setLoyaltyLionTrackingId($value);
   }
 
   /**
@@ -191,6 +210,11 @@ class LoyaltyLion_Core_Model_Observer {
     if ($this->session->getLoyaltyLionReferralId())
       $data['referral_id'] = $this->session->getLoyaltyLionReferralId();
 
+    $tracking_id = $this->getTrackingIdFromSession();
+
+    if ($tracking_id)
+      $data['tracking_id'] = $tracking_id;
+
     $response = $this->client->events->track('signup', $data);
 
     if ($response->success) {
@@ -199,5 +223,29 @@ class LoyaltyLion_Core_Model_Observer {
       Mage::log('[LoyaltyLion] Failed to track event - status: ' . $response->status . ', error: ' . $response->error,
         Zend_Log::ERR);
     }
+  }
+
+  /**
+   * Check the session for a `tracking_id`, and return it unless it has expired
+   *
+   * @return [type] Tracking id or null if it doesn't exist or has expired
+   */
+  private function getTrackingIdFromSession() {
+    if (!$this->session->getLoyaltyLionTrackingId())
+      return null;
+
+    $values = explode(':::', $this->session->getLoyaltyLionTrackingId());
+
+    if (empty($values))
+      return null;
+
+    if (count($values) != 2)
+      return $values[0];
+
+    // for now, let's have a 24 hour expiration time on the timestamp
+    if (time() - (int)$values[0] > 86400)
+      return null;
+
+    return $values[1];
   }
 }
