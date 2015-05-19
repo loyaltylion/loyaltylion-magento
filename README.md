@@ -1,6 +1,6 @@
 ## LoyaltyLion for Magento
 
-Version 0.0.1
+Version 1.0.2
 
 ### Compatibility
 
@@ -25,3 +25,9 @@ Once installed and correctly configured, this module will
 ### What you need to do
 
 You'll need to add the LoyaltyLion UI elements to your store before the program is fully active. Details of this can be found [in our documentation](https://loyaltylion.com/docs/ui-elements)
+
+### Changelog
+
+* 1.0.2: supports sending discounts used when tracking orders
+* 1.0.1: supports sending loyaltylion `tracking_id` parameters
+* 1.0.0: initial release
