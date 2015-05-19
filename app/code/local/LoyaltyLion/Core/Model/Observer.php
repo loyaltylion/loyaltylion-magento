@@ -33,7 +33,7 @@ class LoyaltyLion_Core_Model_Observer {
     if (!$this->isEnabled()) return;
 
     $order = $observer->getEvent()->getOrder();
-    
+
     $data = array(
       'merchant_id' => $order->getId(),
       'customer_id' => $order->getCustomerId(),
@@ -90,11 +90,11 @@ class LoyaltyLion_Core_Model_Observer {
 
     // this event is also fired all over the place, even after the customer has been created. alas, this is
     // the only reliable way to find out if a new account has been created during checkout, so...
-    // 
+    //
     // we'll check the created_at time of the customer. if it's more than a minute in the past we'll assume
     // this is not a new customer. in theory, this event should never fire more than a few seconds after a
     // NEW account has been created, so this check ought to do what we want...
-    
+
     if ($customer->getCreatedAtTimestamp() < (time() - 60)) return;
 
     $this->trackSignup($customer);
@@ -103,7 +103,7 @@ class LoyaltyLion_Core_Model_Observer {
   /**
    * If a referral id is present (?ll_ref_id=xyz), save it to the session so it can be sent off with
    * tracked event calls later
-   * 
+   *
    * @param  Varien_Event_Observer $observer [description]
    * @return [type]                          [description]
    */
@@ -123,7 +123,7 @@ class LoyaltyLion_Core_Model_Observer {
    *
    * Because the update endpoint is idempotent, this can be called as many times as needed to catch all
    * updates to an order without worrying about missing any order updates, as we send it all off here
-   * 
+   *
    * @param  [type] $order [description]
    * @return [type]        [description]
    */
@@ -176,7 +176,7 @@ class LoyaltyLion_Core_Model_Observer {
 
   /**
    * Track a signup event for the given customer
-   * 
+   *
    * @param  [type] $customer [description]
    * @return [type]           [description]
    */
