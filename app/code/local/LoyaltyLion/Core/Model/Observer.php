@@ -52,6 +52,15 @@ class LoyaltyLion_Core_Model_Observer {
       $data['total_paid'] = $order->getBaseTotalPaid();
     }
 
+    if ($order->getCouponCode()) {
+      $data['discount_codes'] = array(
+        array(
+          'code' => $order->getCouponCode(),
+          'amount' => abs($order->getDiscountAmount()),
+        ),
+      );
+    }
+
     if ($this->session->getLoyaltyLionReferralId())
       $data['referral_id'] = $this->session->getLoyaltyLionReferralId();
 
