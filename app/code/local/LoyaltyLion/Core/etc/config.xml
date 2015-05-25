@@ -85,7 +85,7 @@
         <observers>
           <loyaltylion_predispatch>
             <class>loyaltylion/observer</class>
-            <method>saveReferralId</method>
+            <method>saveReferralAndTrackingId</method>
           </loyaltylion_predispatch>
         </observers>
       </controller_action_predispatch>
