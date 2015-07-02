@@ -41,6 +41,7 @@ class LoyaltyLion_Core_Model_Observer {
       'total' => (string) $order->getBaseGrandTotal(),
       'total_shipping' => (string) $order->getBaseShippingAmount(),
       'number' => (string) $order->getIncrementId(),
+      'guest' => $order->getCustomerIsGuest(),
     );
 
     if ($order->getBaseTotalDue() == $order->getBaseGrandTotal()) {
