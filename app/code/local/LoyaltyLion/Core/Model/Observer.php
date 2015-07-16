@@ -41,6 +41,9 @@ class LoyaltyLion_Core_Model_Observer {
       'total' => (string) $order->getBaseGrandTotal(),
       'total_shipping' => (string) $order->getBaseShippingAmount(),
       'number' => (string) $order->getIncrementId(),
+      'guest' => $order->getCustomerIsGuest(),
+      'ip_address' => Mage::helper('core/http')->getRemoteAddr(),
+      'user_agent' => $_SERVER['HTTP_USER_AGENT']
     );
 
     if ($order->getBaseTotalDue() == $order->getBaseGrandTotal()) {
@@ -161,6 +164,8 @@ class LoyaltyLion_Core_Model_Observer {
     $data = array(
       'refund_status' => 'not_refunded',
       'total_refunded' => 0,
+      'ip_address' => Mage::helper('core/http')->getRemoteAddr(),
+      'user_agent' => $_SERVER['HTTP_USER_AGENT']
     );
 
     if ($order->getBaseTotalDue() == $order->getBaseGrandTotal()) {
@@ -214,6 +219,8 @@ class LoyaltyLion_Core_Model_Observer {
       'customer_id' => $customer->getId(),
       'customer_email' => $customer->getEmail(),
       'date' => date('c'),
+      'ip_address' => Mage::helper('core/http')->getRemoteAddr(),
+      'user_agent' => $_SERVER['HTTP_USER_AGENT']
     );
 
     if ($this->session->getLoyaltyLionReferralId())
