@@ -1,0 +1,38 @@
+<config>
+    <api2>
+        <resource_groups>
+            <couponimport translate="title" module="LoyaltyLion_CouponImport">
+                <title>Coupon Import API</title>
+                <sort_order>10</sort_order>
+            </couponimport>
+        </resource_groups>
+        <resources>
+            <couponimport translate="title" module="LoyaltyLion_CouponImport">
+                <group>couponimport</group>
+                <model>couponimport/api2_coupon</model>
+                <title>Coupons</title>
+                <sort_order>10</sort_order>
+                <privileges>
+                    <admin>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                    </admin>
+                </privileges>
+                <attributes>
+                    <coupon_id>Coupon ID</coupon_id>
+                    <code>Code</code>
+                    <qty>Quantity</qty>
+                    <length>Length</length>
+                    <format>Format</format>
+                </attributes>
+                <routes>
+                    <route>
+                        <route>/loyaltylion/rules/:rule_id/codes</route>
+                        <action_type>collection</action_type>
+                    </route>
+                </routes>
+                <versions>1</versions>
+            </couponimport>
+        </resources>
+    </api2>
+</config>

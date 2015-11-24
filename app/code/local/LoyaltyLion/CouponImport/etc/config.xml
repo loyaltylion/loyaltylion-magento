@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <LoyaltyLion_CouponImport>
+            <version>0.1.0</version>
+        </LoyaltyLion_CouponImport>
+    </modules>
+    <global>
+        <models>
+            <couponimport>
+                <class>LoyaltyLion_CouponImport_Model</class>
+            </couponimport>
+        </models>
+    </global>
+</config>
