@@ -112,15 +112,4 @@
       </resources>
     </acl>
   </adminhtml>
-  <admin>
-    <routers>
-      <loyaltylion>
-        <use>admin</use>
-        <args>
-          <module>LoyaltyLion_Core</module>
-          <frontName>loyaltylion</frontName>
-        </args>
-      </loyaltylion>
-    </routers>
-  </admin>
 </config>
