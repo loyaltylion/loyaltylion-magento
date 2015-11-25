@@ -31,9 +31,6 @@
                 <attributes>
                     <coupon_id>Coupon ID</coupon_id>
                     <code>Code</code>
-                    <qty>Quantity</qty>
-                    <length>Length</length>
-                    <format>Format</format>
                 </attributes>
                 <routes>
                     <route>
