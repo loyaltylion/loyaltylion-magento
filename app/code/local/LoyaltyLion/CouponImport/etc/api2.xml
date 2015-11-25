@@ -58,9 +58,18 @@
                 <attributes>
                     <rule_id>Rule ID</rule_id>
                     <name>Name</name>
+                    <description>Description</description>
                     <simple_action>Simple Action</simple_action>
+                    <discount_amount>discount_amount</discount_amount>
                     <from_date>From Date</from_date>
                     <to_date>To Date</to_date>
+                    <is_active>Is Active</is_active>
+                    <use_auto_generation>Use Auto Generation</use_auto_generation>
+                    <website_ids>Website IDs</website_ids>
+                    <customer_group_ids>Customer group IDs</customer_group_ids>
+                    <coupon_type>Coupon Type</coupon_type>
+                    <uses_per_coupon>Uses per coupon</uses_per_coupon>
+                    <uses_per_customer>Uses per customer</uses_per_customer>
                 </attributes>
                 <routes>
                     <route_entity>
