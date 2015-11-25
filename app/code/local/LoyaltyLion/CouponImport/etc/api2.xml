@@ -52,17 +52,25 @@
                     <admin>
                         <create>1</create>
                         <retrieve>1</retrieve>
+                        <update>1</update>
                     </admin>
                 </privileges>
                 <attributes>
                     <rule_id>Rule ID</rule_id>
-		    <name>Name</name>
+                    <name>Name</name>
+                    <simple_action>Simple Action</simple_action>
+                    <from_date>From Date</from_date>
+                    <to_date>To Date</to_date>
                 </attributes>
                 <routes>
-                    <route>
+                    <route_entity>
                         <route>/loyaltylion/rules/:rule_id</route>
                         <action_type>entity</action_type>
-                    </route>
+                    </route_entity>
+                    <route_collection>
+                        <route>/loyaltylion/rules</route>
+                        <action_type>collection</action_type>
+                    </route_collection>
                 </routes>
                 <versions>1</versions>
             </couponimport_pricerule>
