@@ -4,10 +4,20 @@
             <couponimport translate="title" module="LoyaltyLion_CouponImport">
                 <title>Coupon Import API</title>
                 <sort_order>10</sort_order>
+                <children>
+                    <couponimport_coupon translate="title" module="LoyaltyLion_CouponImport">
+                        <title>Coupon</title>
+                        <sort_order>10</sort_order>
+                    </couponimport_coupon>
+                    <couponimport_pricerule translate="title" module="LoyaltyLion_CouponImport">
+                        <title>Price Rule</title>
+                        <sort_order>10</sort_order>
+                    </couponimport_pricerule>
+                </children>
             </couponimport>
         </resource_groups>
         <resources>
-            <couponimport translate="title" module="LoyaltyLion_CouponImport">
+            <couponimport_coupon translate="title" module="LoyaltyLion_CouponImport">
                 <group>couponimport</group>
                 <model>couponimport/api2_coupon</model>
                 <title>Coupons</title>
@@ -32,7 +42,30 @@
                     </route>
                 </routes>
                 <versions>1</versions>
-            </couponimport>
+            </couponimport_coupon>
+            <couponimport_pricerule translate="title" module="LoyaltyLion_CouponImport">
+                <group>couponimport</group>
+                <model>couponimport/api2_pricerule</model>
+                <title>Price Rules</title>
+                <sort_order>10</sort_order>
+                <privileges>
+                    <admin>
+                        <create>1</create>
+                        <retrieve>1</retrieve>
+                    </admin>
+                </privileges>
+                <attributes>
+                    <rule_id>Rule ID</rule_id>
+		    <name>Name</name>
+                </attributes>
+                <routes>
+                    <route>
+                        <route>/loyaltylion/rules/:rule_id</route>
+                        <action_type>entity</action_type>
+                    </route>
+                </routes>
+                <versions>1</versions>
+            </couponimport_pricerule>
         </resources>
     </api2>
 </config>
