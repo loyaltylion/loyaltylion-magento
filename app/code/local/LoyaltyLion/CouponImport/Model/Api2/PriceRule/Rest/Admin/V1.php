@@ -22,8 +22,10 @@ class LoyaltyLion_CouponImport_Model_Api2_PriceRule_Rest_Admin_V1 extends Loyalt
         //The codes themselves will be imported from LoyaltyLion.
         $model->setUseAutoGeneration(1);
         $model->save();
-        $data = $model->toArray();
-        return $data;
+        $data = $model->getData();
+        $id = $data['rule_id'];
+        //I can't find a method to give this URL so this could totally break easily :(
+        return "/api/rest/loyaltylion/rules/{$id}";
     }
     /**
      * Retrieve price rule
