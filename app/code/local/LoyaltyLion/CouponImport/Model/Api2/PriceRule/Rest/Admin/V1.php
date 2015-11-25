@@ -41,7 +41,10 @@ class LoyaltyLion_CouponImport_Model_Api2_PriceRule_Rest_Admin_V1 extends Loyalt
     }
     protected function _retrieveCollection()
     {
-        //implement this
+        $collection = Mage::getModel('salesrule/rule')
+            ->getResourceCollection();
+        $data = $collection->load()->toArray();
+        return $data['items'];
     }
     /**
      * Load sales rule by ID.
