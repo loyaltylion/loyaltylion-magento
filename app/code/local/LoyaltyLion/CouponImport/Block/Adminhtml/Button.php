@@ -26,7 +26,7 @@ class LoyaltyLion_CouponImport_Block_Adminhtml_Button extends Mage_Adminhtml_Blo
      *
      * @return string
      */
-    public function getAjaxCheckUrl()
+    public function getAjaxSetupUrl()
     {
         return Mage::helper('adminhtml')->getUrl('adminhtml/adminhtml_loyaltylioncouponimport/setup');
     }
@@ -41,7 +41,7 @@ class LoyaltyLion_CouponImport_Block_Adminhtml_Button extends Mage_Adminhtml_Blo
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
             'id'        => 'loyaltylion_setup_button',
-            'label'     => $this->helper('adminhtml')->__('Quick-Setup API access'),
+            'label'     => $this->helper('adminhtml')->__('Configure API access'),
             'onclick'   => 'javascript:doSetup(); return false;'
         ));
  
