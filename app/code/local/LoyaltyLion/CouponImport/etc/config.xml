@@ -11,5 +11,10 @@
                 <class>LoyaltyLion_CouponImport_Model</class>
             </couponimport>
         </models>
+        <blocks>
+            <couponimport>
+                <class>LoyaltyLion_CouponImport_Block</class>
+            </couponimport>
+        </blocks>
     </global>
 </config>

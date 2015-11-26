@@ -1,10 +1,9 @@
 <script type="text/javascript">
     //<![CDATA[
-    function check() {
-        new Ajax.Request('<?php echo $this->getAjaxCheckUrl() ?>', {
+    function doSetup() {
+        new Ajax.Request('<?php echo $this->getAjaxSetupUrl() ?>', {
             method:     'get',
             onSuccess: function(transport){
- 
             if (transport.responseText){
                 alert('Checked')
             }

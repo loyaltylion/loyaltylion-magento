@@ -4,3 +4,4 @@ app/design/frontend/base/default/layout/loyaltylion.xml     app/design/frontend/
 app/etc/modules/LoyaltyLion_Core.xml                        app/etc/modules/LoyaltyLion_Core.xml
 app/etc/modules/LoyaltyLion_CouponImport.xml		    app/etc/modules/LoyaltyLion_CouponImport.xml
 app/code/local/LoyaltyLion/CouponImport/                    app/code/local/LoyaltyLion/CouponImport/
+app/design/adminhtml/default/default/template/loyaltylion/  app/design/adminhtml/default/default/template/loyaltylion/

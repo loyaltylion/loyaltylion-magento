@@ -127,8 +127,10 @@ class LoyaltyLion_CouponImport_QuickSetupController extends Mage_Adminhtml_Contr
         $credentials = $this->generateOAuthCredentials($AppName);
         $this->submitOAuthCredentials($credentials);
     }
-}	
 
-$c = new LoyaltyLion_CouponImport_QuickSetupController();
-
-$c->LLAPISetup();
+    public function setupAction() {
+        $this->LLAPISetup();
+        $result = 1;
+        Mage::app()->getResponse()->setBody($result);
+    }
+}
