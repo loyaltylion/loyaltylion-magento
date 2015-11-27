@@ -28,7 +28,7 @@ class LoyaltyLion_CouponImport_Block_Adminhtml_Button extends Mage_Adminhtml_Blo
      */
     public function getAjaxSetupUrl()
     {
-        return Mage::helper('adminhtml')->getUrl('adminhtml/adminhtml_loyaltylioncouponimport/setup');
+        return Mage::helper('adminhtml')->getUrl('adminhtml/quicksetup/setup');
     }
  
     /**

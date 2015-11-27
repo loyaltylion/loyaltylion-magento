@@ -1,6 +1,6 @@
 <?php
 
-class LoyaltyLion_CouponImport_QuickSetupController extends Mage_Adminhtml_Controller_Action
+class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Adminhtml_Controller_Action
 {
     public function generateRestRole($name) {
         //check "rest role created" flag
@@ -48,7 +48,7 @@ class LoyaltyLion_CouponImport_QuickSetupController extends Mage_Adminhtml_Contr
             }
         }
 
-        return $roleId
+        return $roleId;
     }
 
     public function assignToRole($userId, $roleId) {
@@ -79,7 +79,7 @@ class LoyaltyLion_CouponImport_QuickSetupController extends Mage_Adminhtml_Contr
         }
         $resources = array(
             Mage_Api2_Model_Acl_Global_Rule::RESOURCE_ALL => array(
-                null => Mage_Api2_Model_Acl_Global_Rule_Permission::TYPE_ALLOW; 
+                null => Mage_Api2_Model_Acl_Global_Rule_Permission::TYPE_ALLOW 
         )
         );
         foreach ($resources as $resourceId => $operations) {

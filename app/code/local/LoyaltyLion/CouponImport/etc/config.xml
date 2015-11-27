@@ -17,4 +17,15 @@
             </couponimport>
         </blocks>
     </global>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <LoyaltyLion_CouponImport after="Mage_Adminhtml">LoyaltyLion_CouponImport_Adminhtml</LoyaltyLion_CouponImport>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
 </config>
