@@ -4,9 +4,9 @@
         new Ajax.Request('<?php echo $this->getAjaxSetupUrl() ?>', {
             method:     'get',
             onSuccess: function(transport){
-            if (transport.responseText){
-                alert('Checked')
-            }
+                button = $('loyaltylion_setup_button');
+                button.removeClassName('fail').addClassName('success');
+                button.update("Success");
             }
         });
     }
