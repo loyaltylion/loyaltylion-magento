@@ -108,13 +108,19 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         Mage::log("LoyaltyLion: Generating OAuth credentials");
         $model = Mage::getModel('oauth/consumer');
         $helper = Mage::helper('oauth');
-        $key = $helper->generateConsumerKey();
-        $secret = $helper->generateConsumerSecret();
-        $model->setKey($key);
-        $model->setSecret($secret);
+        $data['key'] = $helper->generateConsumerKey();
+        $data['secret'] = $helper->generateConsumerSecret();
+        $model->addData($data);
         $model->setName($name);
         $model->save();
-        return array('key' => $key, 'secret' => $secret);
+        $consumer_id = $model->getId();
+        return array('key' => $data['key'], 'secret' => $data['secret'], 'id' => $consumer_id);
+    }
+
+    public function getOAuthCredentials($id) {
+        Mage::log("LoyaltyLion: Retrieving OAuth credentials");
+        $model = Mage::getModel('oauth/consumer');
+        return $model->getData();
     }
 
     public function submitOAuthCredentials($credentials) {
@@ -139,7 +145,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         //assigning just overwrites old permissions with "all", so doing it twice is harmless
         $assigned = $this->assignToRole($currentUser, $roleID);
         //As with the role assignment, we can do this twice and it's okay.
-        $this->enableAllAttributes($roleID);
+        $this->enableAllAttributes();
 
         $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
         $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
@@ -148,16 +154,26 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
             return "not-configured-yet";
         }
 
-        $OAuthConfigured = Mage::getStoreConfig('loyaltylion/internals/oauth_configured');
-        if (!$OAuthConfigured) {
+        $OAuthConsumerID = Mage::getStoreConfig('loyaltylion/internals/oauth_consumer_id');
+        if (!$OAuthConsumerID) {
             $credentials = $this->generateOAuthCredentials($AppName);
-            $result = $this->submitOAuthCredentials($credentials);
-            Mage::getModel('core/config')->saveConfig('loyaltylion/internals/oauth_configured', $roleID);
+            $OAuthConsumerID = $credentials['id'];
+            Mage::getModel('core/config')->saveConfig('loyaltylion/internals/oauth_consumer_id', $OAuthConsumerID);
             return $result;
         } else {
             Mage::log("LoyaltyLion: OAuth is already configured, skipping...");
-            return "already-done";
+            $credentials = $this->getOAuthCredentials($OAuthConsumerID);
         }
+
+        $hasSubmitted = Mage::getStoreConfig('loyaltylion/internals/has_submitted_oauth');
+        if ($hasSubmitted) {
+            Mage::log("LoyaltyLion: OAuth is already submitted, skipping...");
+            return "already-done";
+        } 
+        $result = $this->submitOAuthCredentials($credentials);
+
+        Mage::getModel('core/config')->saveConfig('loyaltylion/internals/has_submitted_oauth', 1);
+        return $result;
     }
 
     public function setupAction() {
