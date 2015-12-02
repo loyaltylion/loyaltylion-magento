@@ -4,9 +4,28 @@
         new Ajax.Request('<?php echo $this->getAjaxSetupUrl() ?>', {
             method:     'get',
             onSuccess: function(transport){
+                switch (transport.responseText) {
+                case "ok":
+                    button = $('loyaltylion_setup_button');
+                    button.removeClassName('fail').addClassName('success');
+                    button.update("Success");
+                    break;
+                case "already-done":
+                    button = $('loyaltylion_setup_button');
+                    button.removeClassName('fail').removeClassName('success');
+                    button.update("API access is already configured");
+                    break;
+                case "not-configured-yet":
+                    button = $('loyaltylion_setup_button');
+                    button.removeClassName('fail').removeClassName('success');
+                    button.update("Please save your Token / Secret first");
+                    break;
+                }
+            },
+            onError: function(transport){
                 button = $('loyaltylion_setup_button');
-                button.removeClassName('fail').addClassName('success');
-                button.update("Success");
+                button.removeClassName('success').addClassName('fail');
+                button.update("Error");
             }
         });
     }

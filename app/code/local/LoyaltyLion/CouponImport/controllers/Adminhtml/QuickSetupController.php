@@ -126,7 +126,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
     }
 
     public function submitOAuthCredentials($credentials) {
-        Mage::log("LoyaltyLion: Submitting OAuth credentials to LoyaltyLion API");
+        Mage::log("LoyaltyLion: Submitting OAuth credentials to LoyaltyLion site");
 
         $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
         $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
@@ -156,9 +156,14 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         $headers = curl_getinfo($curl);
         $error_code = curl_errno($curl);
         $error_msg = curl_error($curl);
-        echo $body;
-        echo $error_code;
-        echo $error_msg;
+        if ($error_code != 0) {
+            return $error_msg;
+        }
+        if ($headers['http_code'] == 200) {
+            return "ok";
+        } elseif (($headers['http_code']) >= 400 && ($headers['http_code'] < 500)) {
+            return "client-error";
+        }
     }
 
     public function LLAPISetup() {
@@ -205,7 +210,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         } 
         $result = $this->submitOAuthCredentials($credentials);
 
-        //Mage::getModel('core/config')->saveConfig('loyaltylion/internals/has_submitted_oauth', 1);
+        Mage::getModel('core/config')->saveConfig('loyaltylion/internals/has_submitted_oauth', 1);
         return $result;
     }
 
