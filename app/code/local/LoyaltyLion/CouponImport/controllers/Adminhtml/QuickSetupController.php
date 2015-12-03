@@ -54,14 +54,8 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
 
     public function assignToRole($userId, $roleId) {
         Mage::log("LoyaltyLion: Assigning current admin user to LoyaltyLion REST role");
-        $user = Mage::getModel("api/user")->load($userId);
-        $user->setRoleId($roleId)->setUserId($userId);
-        if ( $user->roleUserExists() === true ) {
-            return false;
-        } else {
-            $user->add();
-            return true;
-        }
+	$model = Mage::getResourceModel('api2/acl_global_role');
+	$model->saveAdminToRoleRelation($userId, $roleId);
     }
 
     public function enableAllAttributes() {
