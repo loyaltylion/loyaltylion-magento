@@ -54,8 +54,8 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
 
     public function assignToRole($userId, $roleId) {
         Mage::log("LoyaltyLion: Assigning current admin user to LoyaltyLion REST role");
-	$model = Mage::getResourceModel('api2/acl_global_role');
-	$model->saveAdminToRoleRelation($userId, $roleId);
+        $model = Mage::getResourceModel('api2/acl_global_role');
+        $model->saveAdminToRoleRelation($userId, $roleId);
     }
 
     public function enableAllAttributes() {
@@ -98,7 +98,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         }
     }
 
-    public function generateOAuthCredentials($name) {
+    public function generateOAuthCredentials($name, $userID) {
         Mage::log("LoyaltyLion: Generating OAuth credentials");
         $model = Mage::getModel('oauth/consumer');
         $helper = Mage::helper('oauth');
@@ -108,25 +108,26 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         $model->setName($name);
         $model->save();
         $consumer_id = $model->getId();
-	$accessToken = $this->getAccessToken($consumer_id);
+        $accessToken = $this->getAccessToken($consumer_id, $userID);
 
         return array_merge(array('consumer_key' => $data['key'], 'consumer_secret' => $data['secret'], 'id' => $consumer_id), $accessToken);
     }
 
-    public function getAccessToken($consumer_id) {
-	$requestToken = Mage::getModel('oauth/token')->createRequestToken($consumer_id, "https://loyaltylion.com/");
-	$accessToken = $requestToken->convertToAccess();
-	$accessData = $accessToken->getData();
-	return array('token' => $accessData['token'], 'secret' => $accessData['secret']);
+    public function getAccessToken($consumer_id, $userID) {
+        $requestToken = Mage::getModel('oauth/token')->createRequestToken($consumer_id, "https://loyaltylion.com/");
+        $requestToken->authorize($userID, 'admin');
+        $accessToken = $requestToken->convertToAccess();
+        $accessData = $accessToken->getData();
+        return array('access_token' => $accessData['token'], 'access_secret' => $accessData['secret']);
     }
 
-    public function getOAuthCredentials($id) {
+    public function getOAuthCredentials($id, $userID) {
         Mage::log("LoyaltyLion: Retrieving OAuth credentials");
         $model = Mage::getModel('oauth/consumer');
         $model->load($id);
         $oauth = $model->getData();
-	$accessToken = $this->getAccessToken($id);
-        return array_merge(array('oauth_key' => $oauth['key'], 'oauth_secret' => $oauth['secret']), $accessToken);
+        $accessToken = $this->getAccessToken($id, $userID);
+        return array_merge(array('consumer_key' => $oauth['key'], 'consumer_secret' => $oauth['secret']), $accessToken);
     }
 
     public function submitOAuthCredentials($credentials) {
@@ -144,7 +145,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
             CURLOPT_USERPWD => $token . ':' . $secret,
             CURLOPT_POST =>  true,
         );
-        $credentials['admin_base_url'] = $admin_oauth_authorize;
+        $credentials['base_url'] = $admin_oauth_authorize;
         $body = json_encode($credentials);
         $options += array(
             CURLOPT_POSTFIELDS => $body,
@@ -198,12 +199,12 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
 
         $OAuthConsumerID = Mage::getStoreConfig('loyaltylion/internals/oauth_consumer_id');
         if (!$OAuthConsumerID) {
-            $credentials = $this->generateOAuthCredentials($AppName);
+            $credentials = $this->generateOAuthCredentials($AppName, $currentUser);
             $OAuthConsumerID = $credentials['id'];
             Mage::getModel('core/config')->saveConfig('loyaltylion/internals/oauth_consumer_id', $OAuthConsumerID);
         } else {
             Mage::log("LoyaltyLion: OAuth is already configured, skipping...");
-            $credentials = $this->getOAuthCredentials($OAuthConsumerID);
+            $credentials = $this->getOAuthCredentials($OAuthConsumerID, $currentUser);
         }
 
         $hasSubmitted = Mage::getStoreConfig('loyaltylion/internals/has_submitted_oauth');
