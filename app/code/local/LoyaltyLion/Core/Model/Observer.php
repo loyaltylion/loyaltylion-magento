@@ -41,7 +41,7 @@ class LoyaltyLion_Core_Model_Observer {
       'total' => (string) $order->getBaseGrandTotal(),
       'total_shipping' => (string) $order->getBaseShippingAmount(),
       'number' => (string) $order->getIncrementId(),
-      'guest' => $order->getCustomerIsGuest(),
+      'guest' => (bool) $order->getCustomerIsGuest(),
       'ip_address' => Mage::helper('core/http')->getRemoteAddr(),
       'user_agent' => $_SERVER['HTTP_USER_AGENT']
     );
