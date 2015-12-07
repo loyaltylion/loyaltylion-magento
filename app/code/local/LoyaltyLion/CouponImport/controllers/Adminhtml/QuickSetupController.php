@@ -136,7 +136,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
         $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
         $setup_uri = 'loyaltylion.dev/magento/oauth_credentials';
-        $admin_oauth_authorize = Mage::helper('adminhtml')->getUrl('adminhtml/oauth_authorize');
+	$base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         $options = array(
             CURLOPT_URL => $setup_uri,
             CURLOPT_USERAGENT => 'loyaltylion-php-client-v2.0.0',
@@ -145,7 +145,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
             CURLOPT_USERPWD => $token . ':' . $secret,
             CURLOPT_POST =>  true,
         );
-        $credentials['base_url'] = $admin_oauth_authorize;
+        $credentials['base_url'] = $base_url;
         $body = json_encode($credentials);
         $options += array(
             CURLOPT_POSTFIELDS => $body,
