@@ -69,6 +69,15 @@
                     <uses_per_customer>Uses per customer</uses_per_customer>
 		    <actions>Actions</actions>
 		    <conditions>Conditions</conditions>
+		    <is_rss>Is RSS?</is_rss>
+		    <discount_qty>Discount Quantity</discount_qty>
+		    <discount_step>Discount Step</discount_step>
+		    <apply_to_shipping>Apply to Shipping?</apply_to_shipping>
+		    <simple_free_shipping>Simple free shipping?</simple_free_shipping>
+		    <stop_rules_processing>Stop rules processing?</stop_rules_processing>
+		    <store_labels>Store labels</store_labels>
+		    <product_ids>Product IDs</product_ids>
+		    <use_auto_generation>Use Auto Generation</use_auto_generation>
                 </attributes>
                 <routes>
                     <route_entity>
