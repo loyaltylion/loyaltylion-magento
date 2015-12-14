@@ -67,6 +67,8 @@
                     <coupon_type>Coupon Type</coupon_type>
                     <uses_per_coupon>Uses per coupon</uses_per_coupon>
                     <uses_per_customer>Uses per customer</uses_per_customer>
+		    <actions>Actions</actions>
+		    <conditions>Conditions</conditions>
                 </attributes>
                 <routes>
                     <route_entity>
