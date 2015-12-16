@@ -146,6 +146,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
             CURLOPT_POST =>  true,
         );
         $credentials['base_url'] = $base_url;
+	$credentials['extension_version'] = Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
         $body = json_encode($credentials);
         $options += array(
             CURLOPT_POSTFIELDS => $body,
