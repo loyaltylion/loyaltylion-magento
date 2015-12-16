@@ -1,5 +1,7 @@
 <?php
 
+require( Mage::getModuleDir('', 'LoyaltyLion_Core') . DS . 'lib' . DS . 'loyaltylion-client' . DS . 'lib' . DS . 'connection.php' );
+
 class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Adminhtml_Controller_Action
 {
     public function generateRestRole($name) {
@@ -135,41 +137,17 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
 
         $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
         $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
-        $setup_uri = 'loyaltylion.dev/magento/oauth_credentials';
+	$connection = new LoyaltyLion_Connection($token, $secret, "http://loyaltylion.dev");
+        $setup_uri = '/magento/oauth_credentials';
 	$base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
-        $options = array(
-            CURLOPT_URL => $setup_uri,
-            CURLOPT_USERAGENT => 'loyaltylion-php-client-v2.0.0',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 5,
-            CURLOPT_USERPWD => $token . ':' . $secret,
-            CURLOPT_POST =>  true,
-        );
         $credentials['base_url'] = $base_url;
 	$credentials['extension_version'] = Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
-        $body = json_encode($credentials);
-        $options += array(
-            CURLOPT_POSTFIELDS => $body,
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($body),
-            ),
-        );
-        $curl = curl_init();
-        curl_setopt_array($curl, $options);
-
-        $body = curl_exec($curl);
-        $headers = curl_getinfo($curl);
-        $error_code = curl_errno($curl);
-        $error_msg = curl_error($curl);
-        if ($error_code != 0) {
-            return $error_msg;
-        }
-        if ($headers['http_code'] == 200) {
-            return "ok";
-        } elseif (($headers['http_code']) >= 400 && ($headers['http_code'] < 500)) {
+	$resp = $connection->post($setup_uri, $credentials);
+	if (isset($resp->error)) {
             return "client-error";
-        }
+	} else {
+            return "ok";
+	}
     }
 
     public function LLAPISetup() {
