@@ -137,17 +137,21 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
 
         $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
         $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
-	$connection = new LoyaltyLion_Connection($token, $secret, "http://loyaltylion.dev");
+	      $connection = new LoyaltyLion_Connection($token, $secret, "http://loyaltylion.dev");
         $setup_uri = '/magento/oauth_credentials';
-	$base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+	      $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         $credentials['base_url'] = $base_url;
-	$credentials['extension_version'] = Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
-	$resp = $connection->post($setup_uri, $credentials);
-	if (isset($resp->error)) {
-            return "client-error";
-	} else {
+        $credentials['extension_version'] = Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
+        $resp = $connection->post($setup_uri, $credentials);
+        if (isset($resp->error)) {
+            Mage::log("[LoyaltyLion] Error submitting credentials:" .' '. $resp->error);
+            return "network-error";
+        } elseif ((int) $resp->status >= 200 && (int) $resp->status <= 204)  {
             return "ok";
-	}
+        } elseif ((int) $resp->status >= 500) {
+            Mage::log("[LoyaltyLion] Error submitting credentials:" .' '. $resp->status .' '. $resp->body);
+            return "server-error";
+        }
     }
 
     public function LLAPISetup() {
