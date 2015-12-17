@@ -22,8 +22,7 @@ class LoyaltyLion_CouponImport_Model_Api2_Coupon_Rest_Admin_V1 extends LoyaltyLi
         $now = $rule->getResource()->formatDate(
             Mage::getSingleton('core/date')->gmtTimestamp()
         );
-	//TODO: infer from parent rule
-	$expirationDate = '2025-01-01 00:00:00';
+	$expirationDate = $rule->to_date;
 	foreach ($coupons as $cpn) {
             $coupon->setId(null)
                 ->setRuleId($ruleId)
