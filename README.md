@@ -1,6 +1,6 @@
 ## LoyaltyLion for Magento
 
-Version 1.0.4
+Version 1.1.0
 
 ### Compatibility
 
@@ -28,6 +28,7 @@ You'll need to add the LoyaltyLion UI elements to your store before the program 
 
 ### Changelog
 
+* 1.1.0: Extend the REST API with price rules and vouchers; submit API credentials to LoyaltyLion servers.
 * 1.0.4: customer guest status is boolean
 * 1.0.3: SUPEE-6788 compatibility
 * 1.0.2: supports sending discounts used when tracking orders
