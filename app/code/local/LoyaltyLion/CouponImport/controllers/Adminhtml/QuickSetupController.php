@@ -146,16 +146,19 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         $setup_uri = '/magento/oauth_credentials';
 	      $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         $credentials['base_url'] = $base_url;
-        $credentials['extension_version'] = Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
+        $credentials['extension_version'] = (string) Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
         $resp = $connection->post($setup_uri, $credentials);
         if (isset($resp->error)) {
             Mage::log("[LoyaltyLion] Error submitting credentials:" .' '. $resp->error);
             return "network-error";
         } elseif ((int) $resp->status >= 200 && (int) $resp->status <= 204)  {
             return "ok";
-        } elseif ((int) $resp->status >= 500) {
-            Mage::log("[LoyaltyLion] Error submitting credentials:" .' '. $resp->status .' '. $resp->body);
-            return "server-error";
+        } elseif ((int) $resp->status == 422) {
+            mage::log("[loyaltylion] error submitting credentials:" .' '. $resp->status .' '. $resp->body);
+            return "credentials-error";
+        } else {
+            mage::log("[loyaltylion] error submitting credentials:" .' '. $resp->status .' '. $resp->body);
+            return "unknown-error";
         }
     }
 
@@ -195,14 +198,10 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
             $credentials = $this->getOAuthCredentials($OAuthConsumerID, $currentUser);
         }
 
-        $hasSubmitted = Mage::getStoreConfig('loyaltylion/internals/has_submitted_oauth');
-        if ($hasSubmitted) {
-            Mage::log("[LoyaltyLion] OAuth is already submitted, skipping...");
-            return "already-done";
-        } 
         $result = $this->submitOAuthCredentials($credentials);
-
-        Mage::getModel('core/config')->saveConfig('loyaltylion/internals/has_submitted_oauth', 1);
+        if ($result == "ok") {
+            Mage::getModel('core/config')->saveConfig('loyaltylion/internals/has_submitted_oauth', 1);
+        }
         return $result;
     }
 

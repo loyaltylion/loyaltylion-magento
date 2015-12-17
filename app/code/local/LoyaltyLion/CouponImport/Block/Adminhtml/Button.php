@@ -38,11 +38,15 @@ class LoyaltyLion_CouponImport_Block_Adminhtml_Button extends Mage_Adminhtml_Blo
      */
     public function getButtonHtml()
     {
+	$configured = Mage::getStoreConfig('loyaltylion/internals/has_submitted_oauth');
+	$text = $configured ? "API access is already configured" : "Configure API access";
+	$class = $configured ? "success" : "";
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
             'id'        => 'loyaltylion_setup_button',
-            'label'     => $this->helper('adminhtml')->__('Configure API access'),
-            'onclick'   => 'javascript:doSetup(); return false;'
+            'label'     => $this->helper('adminhtml')->__($text),
+            'onclick'   => 'javascript:doSetup(); return false;',
+	    'class'	=> $class
         ));
  
         return $button->toHtml();
