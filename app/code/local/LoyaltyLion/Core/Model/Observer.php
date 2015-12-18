@@ -29,6 +29,37 @@ class LoyaltyLion_Core_Model_Observer {
     return true;
   }
 
+  private function getItems($orderId) {
+    $collection = Mage::getResourceModel('sales/order_item_collection');
+    $collection->addAttributeToFilter('order_id', array($orderId));
+    $items = array();
+    foreach ($collection->getItems() as $item) {
+      $items[] = $item->toArray();
+    }
+    return $items;
+  }
+
+  private function getAddresses($orderId) {
+    $addresses = array();
+    $collection = Mage::getResourceModel('sales/order_address_collection');
+    $collection->addAttributeToFilter('parent_id', array($orderId));
+    foreach ($collection->getItems() as $item) {
+      $addresses[] = $item->toArray();
+    }
+    return $addresses;
+  }
+
+  private function getComments($orderId) {
+    $comments = array();
+    $collection = Mage::getResourceModel('sales/order_status_history_collection');
+    $collection->setOrderFilter(array($orderId));
+    foreach ($collection->getItems() as $item) {
+      $comments[] = $item->toArray();
+    }
+    return $comments;
+
+  }
+
   public function handleOrderCreate(Varien_Event_Observer $observer) {
     if (!$this->isEnabled()) return;
 
@@ -43,8 +74,13 @@ class LoyaltyLion_Core_Model_Observer {
       'number' => (string) $order->getIncrementId(),
       'guest' => (bool) $order->getCustomerIsGuest(),
       'ip_address' => Mage::helper('core/http')->getRemoteAddr(),
-      'user_agent' => $_SERVER['HTTP_USER_AGENT']
+      'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+      '$magento_payload' => $order->toArray()
     );
+
+    $data['$magento_payload']['order_items'] = $this->getItems($order->getId());
+    $data['$magento_payload']['order_comments'] = $this->getComments($order->getId());
+    $data['$magento_payload']['addresses'] = $this->getAddresses($order->getId());
 
     if ($order->getBaseTotalDue() == $order->getBaseGrandTotal()) {
       $data['payment_status'] = 'not_paid';
@@ -194,6 +230,11 @@ class LoyaltyLion_Core_Model_Observer {
         $data['total_refunded'] = $order->getBaseGrandTotal();
       }
     }
+
+    $data['$magento_payload'] = $order->toArray();
+    $data['$magento_payload']['order_items'] = $this->getItems($order->getId());
+    $data['$magento_payload']['order_comments'] = $this->getComments($order->getId());
+    $data['$magento_payload']['addresses'] = $this->getAddresses($order->getId());
 
     $response = $this->client->orders->update($order->getId(), $data);
 
