@@ -81,6 +81,9 @@ class LoyaltyLion_Core_Model_Observer {
     $data['$magento_payload']['order_items'] = $this->getItems($order->getId());
     $data['$magento_payload']['order_comments'] = $this->getComments($order->getId());
     $data['$magento_payload']['addresses'] = $this->getAddresses($order->getId());
+    $data['$magento_version'] = Mage::getVersion();
+    $data['$magento_platform'] = Mage::getEdition();
+    $data['$magento_module_version'] = (string) Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
 
     if ($order->getBaseTotalDue() == $order->getBaseGrandTotal()) {
       $data['payment_status'] = 'not_paid';
@@ -235,6 +238,9 @@ class LoyaltyLion_Core_Model_Observer {
     $data['$magento_payload']['order_items'] = $this->getItems($order->getId());
     $data['$magento_payload']['order_comments'] = $this->getComments($order->getId());
     $data['$magento_payload']['addresses'] = $this->getAddresses($order->getId());
+    $data['$magento_version'] = Mage::getVersion();
+    $data['$magento_platform'] = Mage::getEdition();
+    $data['$magento_module_version'] = (string) Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
 
     $response = $this->client->orders->update($order->getId(), $data);
 
