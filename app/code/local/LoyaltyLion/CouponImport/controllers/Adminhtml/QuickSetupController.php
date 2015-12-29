@@ -142,6 +142,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
 
         $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
         $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
+
 	      $connection = new LoyaltyLion_Connection($token, $secret, $loyaltyLionURL);
         $setup_uri = '/magento/oauth_credentials';
 	      $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
@@ -165,8 +166,20 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
     public function LLAPISetup() {
         Mage::log("[LoyaltyLion] Setting up API access");
         $currentUser = Mage::getSingleton('admin/session')->getUser()->getId();
-        $roleName = 'LoyaltyLion_TEST';
-        $AppName = 'LoyaltyLion_Oauth_App';
+        $roleName = 'LoyaltyLion';
+        $AppName = 'LoyaltyLion';
+
+        $token = $this->getRequest()->getParam('token');
+        $secret = $this->getRequest()->getParam('secret');
+
+        if (!empty($token) && !empty($secret)) {
+            Mage::log("[LoyaltyLion] Saving new LoyaltyLion credentials");
+            Mage::getModel('core/config')->saveConfig('loyaltylion/configuration/loyaltylion_token', $token);
+            Mage::getModel('core/config')->saveConfig('loyaltylion/configuration/loyaltylion_secret', $secret);
+        } else {
+            $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
+            $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
+        }
 
         $roleID = Mage::getStoreConfig('loyaltylion/internals/rest_role_id');
         if (!$roleID) {
@@ -181,8 +194,6 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         //As with the role assignment, we can do this twice and it's okay.
         $this->enableAllAttributes();
 
-        $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
-        $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
         if (empty($token) || empty($secret)) {
             Mage::log("[LoyaltyLion] Could not generate OAuth credentials because token and/or secret not set.");
             return "not-configured-yet";

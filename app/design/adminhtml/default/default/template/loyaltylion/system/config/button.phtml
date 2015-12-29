@@ -2,8 +2,11 @@
     //<![CDATA[
     function doSetup() {
         button = $('loyaltylion_setup_button');
+	token = $('loyaltylion_configuration_loyaltylion_token').value
+	secret = $('loyaltylion_configuration_loyaltylion_secret').value
         new Ajax.Request('<?php echo $this->getAjaxSetupUrl() ?>', {
-            method:     'get',
+            method: 'get',
+            parameters: { 'token':token, 'secret': secret },
             onSuccess: function(transport){
                 switch (transport.responseText) {
                 case "ok":
@@ -12,11 +15,11 @@
                     break;
                 case "not-configured-yet":
                     button.removeClassName('fail').removeClassName('success');
-                    button.update("Please save your Token / Secret first");
+                    button.update("Please enter your Token / Secret first");
                     break;
 		default:
                     button.removeClassName('success').addClassName('fail');
-		    button.update("Error");
+		    button.update("Error - are you sure you entered the right Token / Secret?");
                 }
             },
             onError: function(transport){
