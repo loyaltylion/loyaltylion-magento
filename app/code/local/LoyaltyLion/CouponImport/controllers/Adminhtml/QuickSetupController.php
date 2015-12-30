@@ -134,18 +134,15 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         return array_merge(array('consumer_key' => $oauth['key'], 'consumer_secret' => $oauth['secret']), $accessToken);
     }
 
-    public function submitOAuthCredentials($credentials) {
+    public function submitOAuthCredentials($credentials, $token, $secret) {
         if (isset($_SERVER['LOYALTYLION_WEBSITE_BASE'])) {
           $loyaltyLionURL = $_SERVER['LOYALTYLION_WEBSITE_BASE'];
         }
         Mage::log("[LoyaltyLion] Submitting OAuth credentials to LoyaltyLion site");
 
-        $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
-        $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
-
-	      $connection = new LoyaltyLion_Connection($token, $secret, $loyaltyLionURL);
+        $connection = new LoyaltyLion_Connection($token, $secret, $loyaltyLionURL);
         $setup_uri = '/magento/oauth_credentials';
-	      $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+        $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         $credentials['base_url'] = $base_url;
         $credentials['extension_version'] = (string) Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
         $resp = $connection->post($setup_uri, $credentials);
@@ -209,7 +206,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
             $credentials = $this->getOAuthCredentials($OAuthConsumerID, $currentUser);
         }
 
-        $result = $this->submitOAuthCredentials($credentials);
+        $result = $this->submitOAuthCredentials($credentials, $token, $secret);
         if ($result == "ok") {
             Mage::getModel('core/config')->saveConfig('loyaltylion/internals/has_submitted_oauth', 1);
         }
