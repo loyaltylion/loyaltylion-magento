@@ -31,6 +31,7 @@
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>1</show_in_store>
+              <comment><![CDATA["Don't have a LoyaltyLion accont? <a href="https://loyaltylion.com/signup" target="_blank">Sign up here.</a>]]></comment>
             </loyaltylion_token>
             <loyaltylion_secret translate='label'>
               <label>Secret</label>
