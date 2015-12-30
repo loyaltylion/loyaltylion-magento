@@ -1,6 +1,6 @@
 ## LoyaltyLion for Magento
 
-Version 1.1.2
+Version 1.1.3
 
 ### Compatibility
 
@@ -28,6 +28,7 @@ You'll need to add the LoyaltyLion UI elements to your store before the program 
 
 ### Changelog
 
+* 1.1.3: Fix oauth credential submission
 * 1.1.2: Eliminate "save config" as a separate button click
 * 1.1.1: Send more information to LL Orders API
 * 1.1.0: Extend the REST API with price rules and vouchers; submit API credentials to LoyaltyLion servers.
