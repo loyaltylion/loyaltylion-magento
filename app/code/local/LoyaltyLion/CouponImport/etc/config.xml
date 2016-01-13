@@ -2,7 +2,7 @@
 <config>
     <modules>
         <LoyaltyLion_CouponImport>
-            <version>0.1.2</version>
+            <version>0.1.3</version>
         </LoyaltyLion_CouponImport>
     </modules>
     <global>

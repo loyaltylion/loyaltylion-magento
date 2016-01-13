@@ -4,7 +4,7 @@ require( Mage::getModuleDir('', 'LoyaltyLion_Core') . DS . 'lib' . DS . 'loyalty
 
 class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Adminhtml_Controller_Action
 {
-    private $loyaltyLionURL = 'https://loyaltylion.com';
+    public $loyaltyLionURL = 'https://loyaltylion.com';
 
     public function generateRestRole($name) {
         Mage::log("[LoyaltyLion] creating REST role");
@@ -136,11 +136,11 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
 
     public function submitOAuthCredentials($credentials, $token, $secret) {
         if (isset($_SERVER['LOYALTYLION_WEBSITE_BASE'])) {
-          $loyaltyLionURL = $_SERVER['LOYALTYLION_WEBSITE_BASE'];
+          $this->loyaltyLionURL = $_SERVER['LOYALTYLION_WEBSITE_BASE'];
         }
         Mage::log("[LoyaltyLion] Submitting OAuth credentials to LoyaltyLion site");
 
-        $connection = new LoyaltyLion_Connection($token, $secret, $loyaltyLionURL);
+        $connection = new LoyaltyLion_Connection($token, $secret, $this->loyaltyLionURL);
         $setup_uri = '/magento/oauth_credentials';
         $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         $credentials['base_url'] = $base_url;
