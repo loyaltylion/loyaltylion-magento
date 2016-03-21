@@ -1,6 +1,6 @@
 ## LoyaltyLion for Magento
 
-Version 1.1.6
+Version 1.1.7
 
 ### Compatibility
 
@@ -28,6 +28,7 @@ You'll need to add the LoyaltyLion UI elements to your store before the program 
 
 ### Changelog
 
+* 1.1.7: Use `$` namespace for core events
 * 1.1.6: Fix controller/model case sensitivity
 * 1.1.4: Fix default submission URL
 * 1.1.3: Fix oauth credential submission
