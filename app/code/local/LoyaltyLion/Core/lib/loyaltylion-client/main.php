@@ -90,7 +90,7 @@ class LoyaltyLion_Activities extends LoyaltyLion_Client {
   /**
    * Track an activity
    * 
-   * @param  [type] $name             The activity name, e.g. "signup"
+   * @param  [type] $name             The activity name, e.g. "$signup"
    * @param  array  $properties       Activity data
    * 
    * @return object                   An object with information about the request. If the track 

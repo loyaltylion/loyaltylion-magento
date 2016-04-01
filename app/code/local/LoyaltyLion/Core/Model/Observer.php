@@ -278,7 +278,7 @@ class LoyaltyLion_Core_Model_Observer {
     if ($tracking_id)
       $data['tracking_id'] = $tracking_id;
 
-    $response = $this->client->events->track('signup', $data);
+    $response = $this->client->events->track('$signup', $data);
 
     if ($response->success) {
       Mage::log('[LoyaltyLion] Tracked event [signup] OK');
