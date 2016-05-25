@@ -1,10 +1,11 @@
 ## LoyaltyLion for Magento
 
-Version 1.1.9
+Version 1.2.0
 
 ### Compatibility
 
-This module has been tested with Magento versions 1.7, 1.8 and 1.9.
+This module has been tested with Magento versions 1.6, 1.7, 1.8 and 1.9.
+Voucher import via the REST API is only supported on Magento >= 1.7.
 
 ### How to install
 
@@ -28,6 +29,7 @@ You'll need to add the LoyaltyLion UI elements to your store before the program 
 
 ### Changelog
 
+* 1.2.0: Add support for importing voucher codes within your Magento Admin panel (Magento 1.6 only)
 * 1.1.9: Partial compatibility with Magento 1.6
 * 1.1.8: Update signup link
 * 1.1.7: Use `$` namespace for core events
