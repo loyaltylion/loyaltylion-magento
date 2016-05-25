@@ -4,7 +4,8 @@ Version 1.2.0
 
 ### Compatibility
 
-This module has been tested with Magento versions 1.7, 1.8 and 1.9.
+This module has been tested with Magento versions 1.6, 1.7, 1.8 and 1.9.
+Voucher import via the REST API is only supported on Magento >= 1.7.
 
 ### How to install
 
