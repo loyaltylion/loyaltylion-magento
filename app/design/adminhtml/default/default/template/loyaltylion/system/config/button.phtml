@@ -1,41 +1,41 @@
 <script type="text/javascript">
-    //<![CDATA[
-    function doSetup() {
-        var button = $('loyaltylion_setup_button');
-	var token = $('loyaltylion_configuration_loyaltylion_token').value
-	var secret = $('loyaltylion_configuration_loyaltylion_secret').value
-	var path_components = window.location.pathname.split('/')
-	var website_pos = path_components.indexOf('website') + 1
-	var code = ''
-	if (website_pos) {
-	    var code = path_components[website_pos]
-	}
-
-        new Ajax.Request('<?php echo $this->getAjaxSetupUrl() ?>', {
-            method: 'get',
-            parameters: { 'token': token, 'secret': secret, 'code': code },
-            onSuccess: function(transport){
-                switch (transport.responseText) {
-                case "ok":
-                    button.removeClassName('fail').addClassName('success');
-                    button.update("Success");
-                    break;
-                case "not-configured-yet":
-                    button.removeClassName('fail').removeClassName('success');
-                    button.update("Please enter your Token / Secret first");
-                    break;
-		default:
-                    button.removeClassName('success').addClassName('fail');
-		    button.update("Error - are you sure you entered the right Token / Secret?");
-                }
-            },
-            onError: function(transport){
-                button.removeClassName('success').addClassName('fail');
-                button.update("Error");
-            }
-        });
+//<![CDATA[
+function doSetup() {
+    var button = $('loyaltylion_setup_button');
+    var token = $('loyaltylion_configuration_loyaltylion_token').value
+    var secret = $('loyaltylion_configuration_loyaltylion_secret').value
+    var path_components = window.location.pathname.split('/')
+    var website_pos = path_components.indexOf('website') + 1
+    var code = ''
+    if (website_pos) {
+        var code = path_components[website_pos]
     }
-    //]]>
+
+    new Ajax.Request('<?php echo $this->getAjaxSetupUrl() ?>', {
+        method: 'get',
+        parameters: { 'token': token, 'secret': secret, 'code': code },
+        onSuccess: function(transport){
+            switch (transport.responseText) {
+            case "ok":
+                button.removeClassName('fail').addClassName('success');
+                button.update("Success");
+                break;
+            case "not-configured-yet":
+                button.removeClassName('fail').removeClassName('success');
+                button.update("Please enter your Token / Secret first");
+                break;
+            default:
+                button.removeClassName('success').addClassName('fail');
+                button.update("Error - are you sure you entered the right Token / Secret?");
+            }
+        },
+        onError: function(transport){
+            button.removeClassName('success').addClassName('fail');
+            button.update("Error");
+        }
+    });
+}
+//]]>
 </script>
- 
+
 <?php echo $this->getButtonHtml() ?>
