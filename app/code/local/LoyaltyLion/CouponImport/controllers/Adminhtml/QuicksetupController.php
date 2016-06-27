@@ -183,6 +183,11 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
             $websiteID = $website->getId();
             $scope = 'websites';
             $scopeId = $websiteID;
+        } else {
+            // LL is being configured in the `default` scope. 
+            // We'll still report a guess at a websiteID; this could be wrong
+            // but knowing the current website is probably better than nothing.
+            $websiteID = Mage::app()->getWebsite()->getId();
         }
 
         if (!empty($token) && !empty($secret)) {
