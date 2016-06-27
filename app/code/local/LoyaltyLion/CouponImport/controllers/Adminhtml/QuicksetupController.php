@@ -134,7 +134,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         return array_merge(array('consumer_key' => $oauth['key'], 'consumer_secret' => $oauth['secret']), $accessToken);
     }
 
-    public function submitOAuthCredentials($credentials, $token, $secret, $websiteID) {
+    public function submitOAuthCredentials($credentials, $token, $secret, $websiteId) {
         if (isset($_SERVER['LOYALTYLION_WEBSITE_BASE'])) {
             $this->loyaltyLionURL = $_SERVER['LOYALTYLION_WEBSITE_BASE'];
         }
@@ -145,8 +145,8 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         $credentials['base_url'] = $base_url;
         $credentials['extension_version'] = (string) Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
-        if ($websiteID > 0) {
-            $credentials['website_id'] = $websiteID;
+        if ($websiteId > 0) {
+            $credentials['website_id'] = $websiteId;
         }
         $resp = $connection->post($setup_uri, $credentials);
         if (isset($resp->error)) {
@@ -173,21 +173,21 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         $secret = $this->getRequest()->getParam('secret');
         $code = $this->getRequest()->getParam('code');
 
-        $websiteID = 0;
+        $websiteId = 0;
         $scope = 'default';
         $scopeId = 0;
 
         if (!empty($code)) {
             // having this means this config is scoped to a particular website, rather than the root 'default' scope
             $website = Mage::getModel('core/website')->load($code);
-            $websiteID = $website->getId();
+            $websiteId = $website->getId();
             $scope = 'websites';
-            $scopeId = $websiteID;
+            $scopeId = $websiteId;
         } else {
             // LL is being configured in the `default` scope. 
-            // We'll still report a guess at a websiteID; this could be wrong
+            // We'll still report a guess at a websiteId; this could be wrong
             // but knowing the current website is probably better than nothing.
-            $websiteID = Mage::app()->getWebsite()->getId();
+            $websiteId = Mage::app()->getWebsite()->getId();
         }
 
         if (!empty($token) && !empty($secret)) {
@@ -227,7 +227,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
             $credentials = $this->getOAuthCredentials($OAuthConsumerID, $currentUser);
         }
 
-        $result = $this->submitOAuthCredentials($credentials, $token, $secret, $websiteID);
+        $result = $this->submitOAuthCredentials($credentials, $token, $secret, $websiteId);
         if ($result == "ok") {
             Mage::getModel('core/config')->saveConfig('loyaltylion/internals/has_submitted_oauth', 1, $scope, $scopeId);
         }
