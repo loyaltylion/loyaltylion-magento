@@ -134,9 +134,9 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         return array_merge(array('consumer_key' => $oauth['key'], 'consumer_secret' => $oauth['secret']), $accessToken);
     }
 
-    public function submitOAuthCredentials($credentials, $token, $secret) {
+    public function submitOAuthCredentials($credentials, $token, $secret, $websiteID) {
         if (isset($_SERVER['LOYALTYLION_WEBSITE_BASE'])) {
-          $this->loyaltyLionURL = $_SERVER['LOYALTYLION_WEBSITE_BASE'];
+            $this->loyaltyLionURL = $_SERVER['LOYALTYLION_WEBSITE_BASE'];
         }
         Mage::log("[LoyaltyLion] Submitting OAuth credentials to LoyaltyLion site");
 
@@ -145,6 +145,9 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         $credentials['base_url'] = $base_url;
         $credentials['extension_version'] = (string) Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
+        if ($websiteID > 0) {
+            $credentials['website_id'] = $websiteID;
+        }
         $resp = $connection->post($setup_uri, $credentials);
         if (isset($resp->error)) {
             Mage::log("[LoyaltyLion] Error submitting credentials:" .' '. $resp->error);
@@ -168,11 +171,24 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
 
         $token = $this->getRequest()->getParam('token');
         $secret = $this->getRequest()->getParam('secret');
+        $code = $this->getRequest()->getParam('code');
+
+        $websiteID = 0;
+        $scope = 'default';
+        $scopeId = 0;
+
+        if (!empty($code)) {
+            // having this means this config is scoped to a particular website, rather than the root 'default' scope
+            $website = Mage::getModel('core/website')->load($code);
+            $websiteID = $website->getId();
+            $scope = 'websites';
+            $scopeId = $websiteID;
+        }
 
         if (!empty($token) && !empty($secret)) {
             Mage::log("[LoyaltyLion] Saving new LoyaltyLion credentials");
-            Mage::getModel('core/config')->saveConfig('loyaltylion/configuration/loyaltylion_token', $token);
-            Mage::getModel('core/config')->saveConfig('loyaltylion/configuration/loyaltylion_secret', $secret);
+            Mage::getModel('core/config')->saveConfig('loyaltylion/configuration/loyaltylion_token', $token, $scope, $scopeId);
+            Mage::getModel('core/config')->saveConfig('loyaltylion/configuration/loyaltylion_secret', $secret, $scope, $scopeId);
         } else {
             $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
             $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
@@ -206,9 +222,9 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
             $credentials = $this->getOAuthCredentials($OAuthConsumerID, $currentUser);
         }
 
-        $result = $this->submitOAuthCredentials($credentials, $token, $secret);
+        $result = $this->submitOAuthCredentials($credentials, $token, $secret, $websiteID);
         if ($result == "ok") {
-            Mage::getModel('core/config')->saveConfig('loyaltylion/internals/has_submitted_oauth', 1);
+            Mage::getModel('core/config')->saveConfig('loyaltylion/internals/has_submitted_oauth', 1, $scope, $scopeId);
         }
         return $result;
     }
