@@ -175,6 +175,15 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         }
     }
 
+    public function getFirstWebsite() {
+        $websites = Mage::getModel('core/website')->getCollection();
+        foreach($websites as $website) {
+            $id = $website->getId();
+            return $id;
+        }
+        return 0;
+    }
+
     public function LLAPISetup() {
         Mage::log("[LoyaltyLion] Setting up API access");
         $currentUser = Mage::getSingleton('admin/session')->getUser()->getId();
@@ -197,8 +206,8 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         } else {
             // LL is being configured in the `default` scope. 
             // We'll still report a guess at a websiteId; this could be wrong
-            // but knowing the current website is probably better than nothing.
-            $websiteId = Mage::app()->getWebsite()->getId();
+            // but knowing the default website is probably better than nothing.
+            $websiteId = $this->getFirstWebsite();
         }
 
         if (!empty($token) && !empty($secret)) {
