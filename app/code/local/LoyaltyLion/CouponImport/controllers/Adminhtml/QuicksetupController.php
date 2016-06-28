@@ -130,11 +130,19 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
     }
 
     public function getAccessToken($consumer_id, $userID) {
-        $requestToken = Mage::getModel('oauth/token')->createRequestToken($consumer_id, "https://loyaltylion.com/");
-        $requestToken->authorize($userID, 'admin');
-        $accessToken = $requestToken->convertToAccess();
-        $accessData = $accessToken->getData();
-        return array('access_token' => $accessData['token'], 'access_secret' => $accessData['secret']);
+        $tokenId = Mage::getStoreConfig('loyaltylion/internals/oauth_token_id');
+        if ($tokenId) {
+            $requestToken = Mage::getModel('oauth/token')->load($tokenId);
+            $tokenData = $requestToken->getData();
+        }  else {
+            $requestToken = Mage::getModel('oauth/token')->createRequestToken($consumer_id, "https://loyaltylion.com/");
+            $requestToken->authorize($userID, 'admin');
+            $accessToken = $requestToken->convertToAccess();
+            $tokenData = $accessToken->getData();
+            Mage::getModel('core/config')
+                ->saveConfig('loyaltylion/internals/oauth_token_id', $tokenData['entity_id']);
+        }
+        return array('access_token' => $tokenData['token'], 'access_secret' => $tokenData['secret']);
     }
 
     public function getOAuthCredentials($id, $userID) {
