@@ -311,7 +311,7 @@ class LoyaltyLion_Core_Model_Observer {
   private function getVersionInfo() {
     $version_info = Array();
     $version_info['$magento_version'] = Mage::getVersion();
-    if (method_exists(Mage, 'getEdition')) {
+    if (method_exists('Mage', 'getEdition')) {
       $version_info['$magento_platform'] = Mage::getEdition();
     } else {
       $version_info['$magento_platform'] = 'unknown';
