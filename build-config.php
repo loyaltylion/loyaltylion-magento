@@ -3,7 +3,7 @@ return array(
 
 //The base_dir and archive_file path are combined to point to your tar archive
 //The basic idea is a seperate process builds the tar file, then this finds it
-'base_dir'               => getcwd(), 
+'base_dir'               => getcwd() . '/build',
 'archive_files'          => 'src.tar',
 
 //The Magento Connect extension name.  Must be unique on Magento Connect
