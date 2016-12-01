@@ -1,4 +1,4 @@
-al: package
+all: package
 build/src.tar:
 	tar -cvf build/src.tar ./app
 package: build/src.tar
