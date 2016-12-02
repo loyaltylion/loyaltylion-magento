@@ -1,3 +1,6 @@
 .DS_Store
 tmp
 .swp
+build/*.tgz
+build/*.tar
+build/var
