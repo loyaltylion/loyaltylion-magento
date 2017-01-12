@@ -65,6 +65,9 @@ class LoyaltyLion_Core_Model_Observer {
 
     $order = $observer->getEvent()->getOrder();
 
+    # We can't track an order without a merchant_id
+    if (!$order || !$order->getId()) return;
+
     $data = array(
       'merchant_id' => $order->getId(),
       'customer_id' => $order->getCustomerId(),
@@ -89,7 +92,8 @@ class LoyaltyLion_Core_Model_Observer {
       $data['payment_status'] = 'paid';
     } else {
       $data['payment_status'] = 'partially_paid';
-      $data['total_paid'] = $order->getBaseTotalPaid();
+      $total_paid = $order->getBaseTotalPaid();
+      $data['total_paid'] = $total_paid === null ? 0 : $total_paid;
     }
 
     if ($order->getCouponCode()) {
