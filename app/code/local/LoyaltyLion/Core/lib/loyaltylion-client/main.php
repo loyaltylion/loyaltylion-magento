@@ -25,37 +25,6 @@ class LoyaltyLion_Client {
     $this->orders = new LoyaltyLion_Orders($this->connection);
   }
 
-  /**
-   * Get a customer auth token from LoyaltyLion
-   *
-   * @deprecated Use JavaScript MAC authentication instead
-   * 
-   * @param  [type] $customer_id [description]
-   * @return [type]              [description]
-   */
-  public function getCustomerAuthToken($customer_id) {
-    $params = array(
-      'customer_id' => $customer_id,
-    );
-
-    $response = $this->connection->post('/customers/authenticate', $params);
-
-    if (isset($response->error)) {
-      echo "LoyaltyLion client error: " . $response->error;
-    }
-    
-    // should have got json back
-    if (empty($response->body)) return null;
-
-    $json = json_decode($response->body);
-
-    if ($json && $json->auth_token) {
-      return $json->auth_token;
-    } else {
-      return null;
-    }
-  }
-
   protected function parseResponse($response) {
     if (isset($response->error)) {
       // this kind of error is from curl itself, e.g. a request timeout, so just return that error
