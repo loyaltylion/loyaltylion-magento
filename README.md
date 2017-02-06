@@ -1,6 +1,6 @@
 ## LoyaltyLion for Magento
 
-Version 1.2.2
+Version 1.2.3
 
 ### Compatibility
 
@@ -29,6 +29,7 @@ You'll need to add the LoyaltyLion UI elements to your store before the program 
 
 ### Changelog
 
+* 1.2.3: Switch to new LoyaltyLion domain
 * 1.2.2: Bugfix: handle unpaid orders on Magento 1.7 more reliably
 * 1.2.1: Add multi-website support for oauth credential submission
 * 1.2.0: Add support for importing voucher codes within your Magento Admin panel (Magento 1.6 only)
