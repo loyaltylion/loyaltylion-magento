@@ -4,7 +4,7 @@ require( Mage::getModuleDir('', 'LoyaltyLion_Core') . DS . 'lib' . DS . 'loyalty
 
 class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Adminhtml_Controller_Action
 {
-    public $loyaltyLionURL = 'https://loyaltylion.com';
+    public $loyaltyLionURL = 'https://app.loyaltylion.com';
 
     public function getRestRole() {
         $roleName = 'LoyaltyLion';
