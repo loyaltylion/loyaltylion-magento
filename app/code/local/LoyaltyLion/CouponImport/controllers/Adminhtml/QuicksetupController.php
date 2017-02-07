@@ -261,4 +261,9 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         $result = $this->LLAPISetup();
         Mage::app()->getResponse()->setBody($result);
     }
+
+    protected function _isAllowed() {
+      return Mage::getSingleton('admin/session')
+        ->isAllowed('system/config');
+    }
 }
