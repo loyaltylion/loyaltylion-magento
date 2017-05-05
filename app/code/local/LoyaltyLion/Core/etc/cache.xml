@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <placeholders>
+        <loyaltylion_core_sdk>
+	    <!-- The placeholders/[placeholder]/block node value must match the class-id of your custom dynamic block, e.g. mymodule/custom -->
+	    <block>loyaltylion/sdk</block>
+	    <!-- The placeholders/[placeholder]/placeholder node value is a unique string to mark the dynamic parts in the cached page -->
+            <placeholder>loyaltylion_sdk_block</placeholder>
+	    <!-- The placeholders/[placeholder]/container node value is the class to generate the content dynamically and handle block level caching -->
+            <container>LoyaltyLion_Core_Model_Placeholder</container>
+            <cache_lifetime>1</cache_lifetime>
+        </loyaltylion_core_sdk>
+    </placeholders>
+</config>

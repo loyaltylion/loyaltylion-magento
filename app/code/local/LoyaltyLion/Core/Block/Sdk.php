@@ -25,4 +25,10 @@ class LoyaltyLion_Core_Block_Sdk extends Mage_Core_Block_Template {
   public function getPlatformHost() {
     return isset($_SERVER['LOYALTYLION_PLATFORM_HOST']) ? $_SERVER['LOYALTYLION_PLATFORM_HOST'] : 'platform.loyaltylion.com';
   }
+
+  // Used to set the cache placeholder attribute definitions, required in
+  // the placeholder's "_renderBlock" function.
+  public function getCacheKeyInfo() {
+	  return array('block_id' => $this->getBlockId());
+  }
 }
