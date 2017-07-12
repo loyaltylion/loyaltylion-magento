@@ -1,6 +1,6 @@
 ## LoyaltyLion for Magento
 
-Version 1.3.0
+Version 1.3.1
 
 ### Compatibility
 
@@ -29,6 +29,7 @@ You'll need to add the LoyaltyLion UI elements to your store before the program 
 
 ### Changelog
 
+* 1.3.1: Add Client helper to support easier custom activities
 * 1.3.0: PSR-1 & MEQP1 compatibility
 * 1.2.3: Switch to new LoyaltyLion domain
 * 1.2.2: Bugfix: handle unpaid orders on Magento 1.7 more reliably

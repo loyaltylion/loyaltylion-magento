@@ -11,15 +11,7 @@ class LoyaltyLion_Core_Model_Observer {
 
     if (!$this->isEnabled()) return;
 
-    require( Mage::getModuleDir('', 'LoyaltyLion_Core') . DS . 'lib' . DS . 'loyaltylion-client' . DS . 'main.php' );
-
-    $options = array();
-
-    if (isset($_SERVER['LOYALTYLION_API_BASE'])) {
-      $options['base_uri'] = $_SERVER['LOYALTYLION_API_BASE'];
-    }
-
-    $this->client = new LoyaltyLion_Client($this->token, $this->secret, $options);
+    $this->client = Mage::helper('loyaltylion/client')->client();
 
     $this->session = Mage::getSingleton('core/session');
   }
