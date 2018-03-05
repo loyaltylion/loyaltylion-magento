@@ -14,7 +14,7 @@ return array(
 //single Magento module, the tar-to-connect script will look to make sure this
 //matches the module version.  You can skip this check by setting the 
 //skip_version_compare value to true
-'extension_version'      => '1.3.1',
+'extension_version'      => '1.4.0',
 'skip_version_compare'   => true,
 
 //You can also have the package script use the version in the module you 
