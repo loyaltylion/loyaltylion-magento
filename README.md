@@ -1,6 +1,6 @@
 ## LoyaltyLion for Magento
 
-Version 1.3.1
+Version 1.3.2
 
 ### Compatibility
 
@@ -29,6 +29,7 @@ You'll need to add the LoyaltyLion UI elements to your store before the program 
 
 ### Changelog
 
+* 1.3.2: Clicking "Configure API access" will now repair broken configurations
 * 1.3.1: Add Client helper to support easier custom activities
 * 1.3.0: PSR-1 & MEQP1 compatibility
 * 1.2.3: Switch to new LoyaltyLion domain
