@@ -269,7 +269,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
     private function findAccessToken($consumer_id, $userID) {
         Mage::log("[LoyaltyLion] Finding existing OAuth token");
         $token = Mage::getModel('oauth/token')->load($consumer_id, 'consumer_id', $userID, 'admin_id');
-        if ($token) {
+        if ($token->getData()) {
             return $token->getData();
         }
         Mage::log("[LoyaltyLion] No existing OAuth token");
@@ -290,8 +290,8 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
     {
         Mage::log("[LoyaltyLion] Retrieving OAuth credentials");
         $model = Mage::getModel('oauth/consumer')->load($this->appName, 'name');
-        if ($model) {
-            $oauth = $model->getData();
+	$oauth = $model->getData();
+        if ($oauth) {
             $accessToken = $this->getAccessToken($model->getId(), $currentUser);
             return array_merge(
                 array(
