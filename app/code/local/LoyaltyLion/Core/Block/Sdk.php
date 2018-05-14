@@ -18,11 +18,15 @@ class LoyaltyLion_Core_Block_Sdk extends Mage_Core_Block_Template {
     return Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
   }
 
-  public function getSDKUrl() {
-    return isset($_SERVER['LOYALTYLION_SDK_URL']) ? $_SERVER['LOYALTYLION_SDK_URL'] : 'sdk.loyaltylionw.net/static/2/loader.js';
+  public function getLoaderUrl() {
+    return $this->getSdkHost() . $this->getLoaderPath();
   }
 
-  public function getPlatformHost() {
-    return isset($_SERVER['LOYALTYLION_PLATFORM_HOST']) ? $_SERVER['LOYALTYLION_PLATFORM_HOST'] : 'sdk.loyaltylion.net';
+  private function getLoaderPath() {
+    return isset($_SERVER['LOYALTYLION_LOADER_PATH']) ? $_SERVER['LOYALTYLION_LOADER_PATH'] : '/static/2/loader.js';
+  }
+
+  public function getSdkHost() {
+    return isset($_SERVER['LOYALTYLION_SDK_HOST']) ? $_SERVER['LOYALTYLION_SDK_HOST'] : 'sdk.loyaltylion.net';
   }
 }
