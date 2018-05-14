@@ -1,15 +1,26 @@
 <?php if ($this->isEnabled()): ?>
-<script>(function(t,e){window.lion=e;var n,i=t.getElementsByTagName("script")[0];n=t.createElement("script"),n.type="text/javascript",n.async=!0,n.src="//<?php echo $this->getSDKUrl() ?>",i.parentNode.insertBefore(n,i),e.init=function(n){function i(t,e){var n=e.split(".");2===n.length&&(t=t[n[0]],e=n[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}var r,o=t.getElementsByTagName("script")[0];r=t.createElement("script"),r.type="text/javascript",r.async=!0,r.src="//<?php echo $this->getPlatformHost() ?>/sdk/configuration/"+n+".js",o.parentNode.insertBefore(r,o),e.ui=e.ui||[];for(var a="_push configure track_pageview identify_customer auth_customer identify_product on off ui.refresh".split(" "),c=0;a.length>c;c++)i(e,a[c]);e._token=n}})(document,window.lion||[]);
-
-lion.init("<?php echo $this->getToken() ?>"); lion.configure({ platform: 'magento' });
-<?php if (Mage::getSingleton('customer/session')->isLoggedIn()): ?>
-  <?php
-    $customer = Mage::getSingleton('customer/session')->getCustomer();
-    $now = date('c');
-    $auth_src = $customer->getId() . $now . $this->getSecret();
-  ?>
-  lion.identify_customer({ id: "<?php echo $customer->getId() ?>", email: "<?php echo $customer->getEmail() ?>", name: "<?php echo $customer->getName() ?>" });
-  lion.auth_customer({ date: "<?php echo $now ?>", auth_token: "<?php echo sha1($auth_src) ?>" });
-<?php endif ?>
-</script>
+  <script>
+    !function(n,o){function t(o){var t=n.getElementsByTagName("script")[0],i=n.createElement("script");i.src=o,i.crossOrigin="",t.parentNode.insertBefore(i,t)}if(!o.isLoyaltyLion){window.loyaltylion=o,void 0===window.lion&&(window.lion=o),o.version=2,o.isLoyaltyLion=!0;var i=new Date;t("https://<?php echo $this->getSDKUrl() ?>?t="+i.getFullYear()+i.getMonth()+i.getDate());var e=!1;o.init=function(n){if(e)throw new Error("Cannot call lion.init more than once");e=!0;var i=o._token=n.token;if(!i)throw new Error("Token must be supplied to lion.init");for(var r=[],a="_push configure bootstrap shutdown on removeListener".split(" "),l=0;l<a.length;l+=1)!function(n,o){n[o]=function(){r.push([o,Array.prototype.slice.call(arguments,0)])}}(o,a[l]);t("https://<?php echo $this->getPlatformHost() ?>/sdk/start/"+i+".js"),o._initData=n,o._buffer=r}}}(document,window.loyaltylion||[]);
+    <?php if (Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+      <?php
+        $customer = Mage::getSingleton('customer/session')->getCustomer();
+        $now = date('c');
+        $auth_src = $customer->getId() . $now . $this->getSecret();
+      ?>
+      loyaltylion.init({
+        token: "<?php echo $this->getToken() ?>",
+        customer: {
+          id: "<?php echo $customer->getId() ?>",
+          email: "<?php echo $customer->getEmail() ?>",
+          name: "<?php echo $customer->getName() ?>"
+        },
+        auth: {
+          date: "<?php echo $now ?>",
+          token: "<?php echo sha1($auth_src) ?>"
+        }
+      });
+    <?php else: ?>
+      loyaltylion.init({ token: "<?php echo $this->getToken() ?>" })
+    <?php endif ?>
+  </script>
 <?php endif ?>
