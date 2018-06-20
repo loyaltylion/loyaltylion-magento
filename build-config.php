@@ -14,7 +14,7 @@ return array(
 //single Magento module, the tar-to-connect script will look to make sure this
 //matches the module version.  You can skip this check by setting the 
 //skip_version_compare value to true
-'extension_version'      => '1.5.0',
+'extension_version'      => '1.5.1',
 'skip_version_compare'   => true,
 
 //You can also have the package script use the version in the module you 
@@ -36,7 +36,7 @@ return array(
 //Magento Connect information fields.
 'summary'                => 'Use LoyaltyLion to add your own loyalty program in minutes and gain valuable customer insights.',
 'description'            => 'Increase activity and customer happiness by offering points for signups, purchases, visits and referrals. Your customers will collect points and redeem them for rewards to use at your     store, which encourages repeat visits and long term loyalty.',
-'notes'                  => 'Update to new JS SDK',
+'notes'                  => 'Add support for delayed customer authentication',
 
 //Magento Connect author information. If author_email is foo@example.com, script will
 //prompt you for the correct name.  Should match your http://www.magentocommerce.com/
