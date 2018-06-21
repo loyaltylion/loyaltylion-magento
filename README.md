@@ -1,6 +1,6 @@
 ## LoyaltyLion for Magento
 
-Version 1.4.1
+Version 1.5.1
 
 ### Compatibility
 
@@ -29,6 +29,7 @@ You'll need to add the LoyaltyLion UI elements to your store before the program 
 
 ### Changelog
 
+* 1.5.1: Add support for delayed customer authentication
 * 1.5.0: Update to new frontend SDK
 * 1.4.1: Clicking "Configure API access" will now repair broken configurations
 * 1.3.1: Add Client helper to support easier custom activities
