@@ -303,6 +303,14 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         }
     }
 
+    private function getCoreConfigVersions() {
+        // It doesn't appear that the core_resource table is usable with Magento's
+        // collection helpers, so we have to query directly.
+        return Mage::getSingleton('core/resource')->
+            getConnection('core_read')->
+            fetchAll('SELECT * FROM core_resource');
+    }
+
     private function submitOAuthCredentials(
         $credentials,
         $token,
@@ -328,6 +336,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
         $credentials['extension_version'] = (string) Mage::getConfig()
             ->getModuleConfig("LoyaltyLion_Core")
             ->version;
+	$credentials['module_config'] = $this->getCoreConfigVersions();
         if ($websiteId > 0) {
             $credentials['website_id'] = $websiteId;
         }
