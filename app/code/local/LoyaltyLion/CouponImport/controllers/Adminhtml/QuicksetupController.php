@@ -306,9 +306,9 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
     private function getCoreConfigVersions() {
         // It doesn't appear that the core_resource table is usable with Magento's
         // collection helpers, so we have to query directly.
-        return Mage::getSingleton('core/resource')->
-            getConnection('core_read')->
-            fetchAll('SELECT * FROM core_resource');
+        return Mage::getSingleton('core/resource')
+            ->getConnection('core_read')
+            ->fetchAll('SELECT * FROM core_resource');
     }
 
     private function submitOAuthCredentials(
