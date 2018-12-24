@@ -25,7 +25,7 @@ Once installed and correctly configured, this module will
 
 ### What you need to do
 
-You'll need to add the LoyaltyLion UI elements to your store before the program is fully active. Details of this can be found [in our documentation](https://loyaltylion.com/docs/ui-elements)
+You'll need to add the LoyaltyLion UI elements to your store before the program is fully active. Details of this can be found [in our documentation](https://developers.loyaltylion.com/sdk/)
 
 ### Changelog
 
