@@ -172,7 +172,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
                 $rule->setRoleId($id)->setResourceId($resourceId)->setPrivilege(
                     $privilege
                 )->
-                    save(
+                save(
 
                 );
             }
@@ -290,7 +290,7 @@ class LoyaltyLion_CouponImport_Adminhtml_QuickSetupController extends Mage_Admin
     {
         Mage::log("[LoyaltyLion] Retrieving OAuth credentials");
         $model = Mage::getModel('oauth/consumer')->load($this->appName, 'name');
-	$oauth = $model->getData();
+        $oauth = $model->getData();
         if ($oauth) {
             $accessToken = $this->getAccessToken($model->getId(), $currentUser);
             return array_merge(
