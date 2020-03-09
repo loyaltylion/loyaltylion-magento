@@ -4,11 +4,9 @@ class LoyaltyLion_Core_Model_Observer {
 
   private $client;
   private $session;
+  private $tokensByStoreId = [];
 
   public function __construct() {
-    $this->token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
-    $this->secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
-
     if (!$this->isEnabled()) return;
 
     $this->client = Mage::helper('loyaltylion/client')->client();
@@ -16,9 +14,26 @@ class LoyaltyLion_Core_Model_Observer {
     $this->session = Mage::getSingleton('core/session');
   }
 
-  private function isEnabled() {
-    if (empty($this->token) || empty($this->secret)) return false;
+  private function isEnabled($storeId = null) {
+    if (is_null($storeId)) $storeId = Mage::app()->getStore()->getId();
+
+    if (empty($this->tokensByStoreId[$storeId])) {
+      $this->findTokensByStoreId($storeId);
+    }
+
+    $tokensForStore = $this->tokensByStoreId[$storeId];
+    if (empty($tokensForStore['token']) || empty($tokensForStore['secret'])) return false;
+
     return true;
+  }
+
+  private function findTokensByStoreId($storeId) {
+    $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token', $storeId);
+    $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret', $storeId);
+
+    $this->tokensByStoreId[$storeId] = array("token" => $token, "secret" => $secret);
+
+    return $this->tokensByStoreId[$storeId];
   }
 
   private function getItems($orderId) {
@@ -53,9 +68,8 @@ class LoyaltyLion_Core_Model_Observer {
   }
 
   public function handleOrderCreate(Varien_Event_Observer $observer) {
-    if (!$this->isEnabled()) return;
-
     $order = $observer->getEvent()->getOrder();
+    if (!$this->isEnabled($order->getStoreId())) return;
 
     # We can't track an order without a merchant_id
     if (!$order || !$order->getId()) return;
@@ -116,23 +130,25 @@ class LoyaltyLion_Core_Model_Observer {
   }
 
   public function handleOrderUpdate(Varien_Event_Observer $observer) {
-    if (!$this->isEnabled()) return;
+    $order = $observer->getEvent()->getOrder();
 
-    $this->sendOrderUpdate($observer->getEvent()->getOrder());
+    if (!$this->isEnabled($order->getStoreId())) return;
+
+    $this->sendOrderUpdate($order);
   }
 
   public function handleCustomerRegistration(Varien_Event_Observer $observer) {
-    if (!$this->isEnabled()) return;
-
     $customer = $observer->getEvent()->getCustomer();
+    if (!$this->isEnabled($customer->getStoreId())) return;
 
     $this->trackSignup($customer);
   }
 
   public function handleCustomerRegistrationOnepage(Varien_Event_Observer $observer) {
-    if (!$this->isEnabled()) return;
-
     $customer = $observer->getEvent()->getSource();
+
+    if (!$this->isEnabled($customer->getStoreId())) return;
+
 
     // this event is fired at multiple times during checkout before the customer has actually been saved,
     // so we'll ignore most of those events
