@@ -149,7 +149,6 @@ class LoyaltyLion_Core_Model_Observer {
 
     if (!$this->isEnabled($customer->getStoreId())) return;
 
-
     // this event is fired at multiple times during checkout before the customer has actually been saved,
     // so we'll ignore most of those events
     if (!$customer->getId()) return;
