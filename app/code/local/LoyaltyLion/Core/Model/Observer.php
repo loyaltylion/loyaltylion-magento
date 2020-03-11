@@ -11,24 +11,31 @@ class LoyaltyLion_Core_Model_Observer {
   }
 
   /**
-   * If no storeId is passed here, we can safely pick the current store scope
-   * from Magento. This mirrors the functionality of `Mage::getStoreConfig` but makes
-   * it clearer to us what store is in scope.   * 
+   * Magento keeps track of the current site context for us, in these cases we can fetch
+   * the config directly for that site without passing the `getStoreConfig` method
+   * a store id. This is useful cases involving the customer facing UI.
    */
-  private function isEnabled($storeId = null) {
-    if (is_null($storeId)) $storeId = Mage::app()->getStore()->getId();
+  private function isEnabledForCurrentContext() {
+    $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
+    $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
 
-    $tokensForStore = $this->findTokensByStoreId($storeId);
-
-    if (empty($tokensForStore['token']) || empty($tokensForStore['secret'])) return false;
+    if (empty($token) || empty($secret)) return false;
     return true;
   }
 
-  private function findTokensByStoreId($storeId) {
+  /**
+   * In contexts that do not involve the customer facing UI we cannot be sure that the current
+   * store context relates to the store that LoyaltyLion is enabled for. e.g. "admin" is a website
+   * in magento. To counter this we can all this method with a storeId.
+   */
+  private function isEnabledForStore($storeId) {
+    if (!isset($storeId)) return false;
+
     $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token', $storeId);
     $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret', $storeId);
 
-    return array("token" => $token, "secret" => $secret);
+    if (empty($token) || empty($secret)) return false;
+    return true;
   }
 
   private function getItems($orderId) {
@@ -64,7 +71,7 @@ class LoyaltyLion_Core_Model_Observer {
 
   public function handleOrderCreate(Varien_Event_Observer $observer) {
     $order = $observer->getEvent()->getOrder();
-    if (!$this->isEnabled($order->getStoreId())) return;
+    if (!$this->isEnabledForStore($order->getStoreId())) return;
 
     # We can't track an order without a merchant_id
     if (!$order || !$order->getId()) return;
@@ -127,14 +134,14 @@ class LoyaltyLion_Core_Model_Observer {
   public function handleOrderUpdate(Varien_Event_Observer $observer) {
     $order = $observer->getEvent()->getOrder();
 
-    if (!$this->isEnabled($order->getStoreId())) return;
+    if (!$this->isEnabledForStore($order->getStoreId())) return;
 
     $this->sendOrderUpdate($order);
   }
 
   public function handleCustomerRegistration(Varien_Event_Observer $observer) {
     $customer = $observer->getEvent()->getCustomer();
-    if (!$this->isEnabled($customer->getStoreId())) return;
+    if (!$this->isEnabledForStore($customer->getStoreId())) return;
 
     $this->trackSignup($customer);
   }
@@ -142,7 +149,7 @@ class LoyaltyLion_Core_Model_Observer {
   public function handleCustomerRegistrationOnepage(Varien_Event_Observer $observer) {
     $customer = $observer->getEvent()->getSource();
 
-    if (!$this->isEnabled($customer->getStoreId())) return;
+    if (!$this->isEnabledForStore($customer->getStoreId())) return;
 
     // this event is fired at multiple times during checkout before the customer has actually been saved,
     // so we'll ignore most of those events
@@ -170,7 +177,7 @@ class LoyaltyLion_Core_Model_Observer {
    * @return [type]                          [description]
    */
   public function saveReferralAndTrackingId(Varien_Event_Observer $observer) {
-    if (!$this->isEnabled()) return;
+    if (!$this->isEnabledForCurrentContext()) return;
 
     $referral_id = Mage::app()->getRequest()->getParam('ll_ref_id');
 

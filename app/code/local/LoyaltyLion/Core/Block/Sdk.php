@@ -2,7 +2,7 @@
 
 class LoyaltyLion_Core_Block_Sdk extends Mage_Core_Block_Template {
   
-  public function isEnabled() {
+  public function isEnabledForCurrentContext() {
     $token = $this->getToken();
     $secret = $this->getSecret();
 
