@@ -4,26 +4,23 @@ class LoyaltyLion_Core_Model_Observer {
 
   private $client;
   private $session;
-  private $tokensByStoreId = [];
 
   public function __construct() {
-    if (!$this->isEnabled()) return;
-
     $this->client = Mage::helper('loyaltylion/client')->client();
-
     $this->session = Mage::getSingleton('core/session');
   }
 
+  /**
+   * If no storeId is passed here, we can safely pick the current store scope
+   * from Magento. This mirrors the functionality of `Mage::getStoreConfig` but makes
+   * it clearer to us what store is in scope.   * 
+   */
   private function isEnabled($storeId = null) {
     if (is_null($storeId)) $storeId = Mage::app()->getStore()->getId();
 
-    if (empty($this->tokensByStoreId[$storeId])) {
-      $this->findTokensByStoreId($storeId);
-    }
+    $tokensForStore = $this->findTokensByStoreId($storeId);
 
-    $tokensForStore = $this->tokensByStoreId[$storeId];
     if (empty($tokensForStore['token']) || empty($tokensForStore['secret'])) return false;
-
     return true;
   }
 
@@ -31,9 +28,7 @@ class LoyaltyLion_Core_Model_Observer {
     $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token', $storeId);
     $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret', $storeId);
 
-    $this->tokensByStoreId[$storeId] = array("token" => $token, "secret" => $secret);
-
-    return $this->tokensByStoreId[$storeId];
+    return array("token" => $token, "secret" => $secret);
   }
 
   private function getItems($orderId) {
