@@ -15,6 +15,6 @@ class LoyaltyLion_Core_Helper_Client extends Mage_Core_Helper_Abstract
   }
 
   public function client($token, $secret) {
-    return $this->client = new LoyaltyLion_Client($token, $secret, $this->options);
+    return new LoyaltyLion_Client($token, $secret, $this->options);
   }
 }
