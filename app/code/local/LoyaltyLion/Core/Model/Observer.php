@@ -2,11 +2,13 @@
 
 class LoyaltyLion_Core_Model_Observer {
 
-  private $client;
+  private $clientHelper;
   private $session;
+  private $token;
+  private $secret;
 
   public function __construct() {
-    $this->client = Mage::helper('loyaltylion/client')->client();
+    $this->clientHelper = Mage::helper('loyaltylion/client');
     $this->session = Mage::getSingleton('core/session');
   }
 
@@ -16,10 +18,10 @@ class LoyaltyLion_Core_Model_Observer {
    * a store id. This is useful cases involving the customer facing UI.
    */
   private function isEnabledForCurrentContext() {
-    $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
-    $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
+    $this->token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token');
+    $this->secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret');
 
-    if (empty($token) || empty($secret)) return false;
+    if (empty($this->token) || empty($this->secret)) return false;
     return true;
   }
 
@@ -31,10 +33,10 @@ class LoyaltyLion_Core_Model_Observer {
   private function isEnabledForStore($storeId) {
     if (!isset($storeId)) return false;
 
-    $token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token', $storeId);
-    $secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret', $storeId);
+    $this->token = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_token', $storeId);
+    $this->secret = Mage::getStoreConfig('loyaltylion/configuration/loyaltylion_secret', $storeId);
 
-    if (empty($token) || empty($secret)) return false;
+    if (empty($this->token) || empty($this->secret)) return false;
     return true;
   }
 
@@ -121,7 +123,8 @@ class LoyaltyLion_Core_Model_Observer {
     if ($tracking_id)
       $data['tracking_id'] = $tracking_id;
 
-    $response = $this->client->orders->create($data);
+    $client = $this->getClient();
+    $response = $client->orders->create($data);
 
     if ($response->success) {
       Mage::log('[LoyaltyLion] Tracked order OK');
@@ -251,7 +254,8 @@ class LoyaltyLion_Core_Model_Observer {
     $data['$magento_payload']['addresses'] = $this->getAddresses($order->getId());
     $data = array_merge($data, $this->getVersionInfo());
 
-    $response = $this->client->orders->update($order->getId(), $data);
+    $client = $this->getClient();
+    $response = $client->orders->update($order->getId(), $data);
 
     if ($response->success) {
       Mage::log('[LoyaltyLion] Updated order OK');
@@ -287,7 +291,8 @@ class LoyaltyLion_Core_Model_Observer {
     if ($tracking_id)
       $data['tracking_id'] = $tracking_id;
 
-    $response = $this->client->events->track('$signup', $data);
+    $client = $this->getClient();
+    $response = $client->events->track('$signup', $data);
 
     if ($response->success) {
       Mage::log('[LoyaltyLion] Tracked event [signup] OK');
@@ -331,5 +336,9 @@ class LoyaltyLion_Core_Model_Observer {
     }
     $version_info['$magento_module_version'] = (string) Mage::getConfig()->getModuleConfig("LoyaltyLion_Core")->version;
     return $version_info;
+  }
+
+  private function getClient() {
+    return $this->clientHelper->client($this->token, $this->secret);
   }
 }
