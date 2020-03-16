@@ -53,3 +53,9 @@ You'll need to add the LoyaltyLion UI elements to your store before the program 
 * 1.0.2: supports sending discounts used when tracking orders
 * 1.0.1: supports sending loyaltylion `tracking_id` parameters
 * 1.0.0: initial release
+
+### Building
+
+First, ensure you have MagentoTarToConnect in your path as `mgbuild`: https://github.com/astorm/MagentoTarToConnect/
+
+Then, `make` to create a new package file.
